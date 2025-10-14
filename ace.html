@@ -1,0 +1,1271 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 1908px;
+                 height: 1160px;
+                 background-color: #232634;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 1908px;
+                 height: 1160px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value=".docs.google.com">.docs.google.com</option>
+                                
+                                    <option value=".drive.google.com">.drive.google.com</option>
+                                
+                                    <option value=".docs.new">.docs.new</option>
+                                
+                                    <option value=".accounts.google.com">.accounts.google.com</option>
+                                
+                                    <option value=".accounts.youtube.com">.accounts.youtube.com</option>
+                                
+                                    <option value=".bit.ly">.bit.ly</option>
+                                
+                                    <option value=".slides.google.com">.slides.google.com</option>
+                                
+                                    <option value=".forms.gle">.forms.gle</option>
+                                
+                                    <option value=".shorturl.at">.shorturl.at</option>
+                                
+                                    <option value=".drawings.google.com">.drawings.google.com</option>
+                                
+                                    <option value=".google.com">.google.com</option>
+                                
+                                    <option value=".localhost">.localhost</option>
+                                
+                                    <option value=".chun.cat">.chun.cat</option>
+                                
+                                    <option value=".mail.google.com">.mail.google.com</option>
+                                
+                                    <option value=".login.tidal.com">.login.tidal.com</option>
+                                
+                                    <option value=".messages.google.com">.messages.google.com</option>
+                                
+                                    <option value=".play.google.com">.play.google.com</option>
+                                
+                                    <option value=".workspace.google.com">.workspace.google.com</option>
+                                
+                                    <option value=".calendar.google.com">.calendar.google.com</option>
+                                
+                                    <option value=".overleaf.com">.overleaf.com</option>
+                                
+                                    <option value=".x.com">.x.com</option>
+                                
+                                    <option value=".google.zoom.us">.google.zoom.us</option>
+                                
+                                    <option value=".jstor.org">.jstor.org</option>
+                                
+                                    <option value=".en.wikipedia.org">.en.wikipedia.org</option>
+                                
+                                    <option value=".duckduckgo.com">.duckduckgo.com</option>
+                                
+                                    <option value=".sveltex.dev">.sveltex.dev</option>
+                                
+                                    <option value=".pyvis.readthedocs.io">.pyvis.readthedocs.io</option>
+                                
+                                    <option value=".stackoverflow.com">.stackoverflow.com</option>
+                                
+                                    <option value=".github.com">.github.com</option>
+                                
+                                    <option value=".reddit.com">.reddit.com</option>
+                                
+                                    <option value=".preview.redd.it">.preview.redd.it</option>
+                                
+                                    <option value=".beebom.com">.beebom.com</option>
+                                
+                                    <option value=".medium.com">.medium.com</option>
+                                
+                                    <option value=".android.com">.android.com</option>
+                                
+                                    <option value=".canvas.mit.edu">.canvas.mit.edu</option>
+                                
+                                    <option value=".sso.canvaslms.com">.sso.canvaslms.com</option>
+                                
+                                    <option value=".web.mit.edu">.web.mit.edu</option>
+                                
+                                    <option value=".sololearn.com">.sololearn.com</option>
+                                
+                                    <option value=".developer.mozilla.org">.developer.mozilla.org</option>
+                                
+                                    <option value=".wiki.mozilla.org">.wiki.mozilla.org</option>
+                                
+                                    <option value=".support.mozilla.org">.support.mozilla.org</option>
+                                
+                                    <option value=".svelte.dev">.svelte.dev</option>
+                                
+                                    <option value=".d3js.org">.d3js.org</option>
+                                
+                                    <option value=".catppuccin.com">.catppuccin.com</option>
+                                
+                                    <option value=".gist.github.com">.gist.github.com</option>
+                                
+                                    <option value=".elixirforum.com">.elixirforum.com</option>
+                                
+                                    <option value=".gabrielatwell.com">.gabrielatwell.com</option>
+                                
+                                    <option value=".vercel.com">.vercel.com</option>
+                                
+                                    <option value=".crystaljjlee.com">.crystaljjlee.com</option>
+                                
+                                    <option value=".tailwindcss.com">.tailwindcss.com</option>
+                                
+                                    <option value=".astro.build">.astro.build</option>
+                                
+                                    <option value=".npmjs.com">.npmjs.com</option>
+                                
+                                    <option value=".app.cvat.ai">.app.cvat.ai</option>
+                                
+                                    <option value=".archive.org">.archive.org</option>
+                                
+                                    <option value=".alanzucconi.com">.alanzucconi.com</option>
+                                
+                                    <option value=".playwright.dev">.playwright.dev</option>
+                                
+                                    <option value=".themusicemporium.com">.themusicemporium.com</option>
+                                
+                                    <option value=".bpl.org">.bpl.org</option>
+                                
+                                    <option value=".na.network-auth.com">.na.network-auth.com</option>
+                                
+                                    <option value=".ab-initio.mit.edu">.ab-initio.mit.edu</option>
+                                
+                                    <option value=".math.mit.edu">.math.mit.edu</option>
+                                
+                                    <option value=".inria.fr">.inria.fr</option>
+                                
+                                    <option value=".beepb00p.xyz">.beepb00p.xyz</option>
+                                
+                                    <option value=".vineeth.io">.vineeth.io</option>
+                                
+                                    <option value=".twitter.com">.twitter.com</option>
+                                
+                                    <option value=".rmeit.github.io">.rmeit.github.io</option>
+                                
+                                    <option value=".wiki.hypr.land">.wiki.hypr.land</option>
+                                
+                                    <option value=".wiki.hyprland.org">.wiki.hyprland.org</option>
+                                
+                                    <option value=".w3schools.com">.w3schools.com</option>
+                                
+                                    <option value=".networkx.org">.networkx.org</option>
+                                
+                                    <option value=".hub.2i2c.mybinder.org">.hub.2i2c.mybinder.org</option>
+                                
+                                    <option value=".mybinder.org">.mybinder.org</option>
+                                
+                                    <option value=".discord.com">.discord.com</option>
+                                
+                                    <option value=".letterboxd.com">.letterboxd.com</option>
+                                
+                                    <option value=".ec.mit.edu">.ec.mit.edu</option>
+                                
+                                    <option value=".guitarcenter.com">.guitarcenter.com</option>
+                                
+                                    <option value=".stores.guitarcenter.com">.stores.guitarcenter.com</option>
+                                
+                                    <option value=".guitarworld.com">.guitarworld.com</option>
+                                
+                                    <option value=".sweetwater.com">.sweetwater.com</option>
+                                
+                                    <option value=".outlook.office.com">.outlook.office.com</option>
+                                
+                                    <option value=".login.microsoftonline.com">.login.microsoftonline.com</option>
+                                
+                                    <option value=".webmail.mit.edu">.webmail.mit.edu</option>
+                                
+                                    <option value=".us.azureauth.duosecurity.com">.us.azureauth.duosecurity.com</option>
+                                
+                                    <option value=".cm.maxient.com">.cm.maxient.com</option>
+                                
+                                    <option value=".idp.mit.edu">.idp.mit.edu</option>
+                                
+                                    <option value=".okta.mit.edu">.okta.mit.edu</option>
+                                
+                                    <option value=".mit-saml.proxy.cirrusidentity.com">.mit-saml.proxy.cirrusidentity.com</option>
+                                
+                                    <option value=".connect.openathens.net">.connect.openathens.net</option>
+                                
+                                    <option value=".eduapps.mit.edu">.eduapps.mit.edu</option>
+                                
+                                    <option value=".touchnet.mit.edu">.touchnet.mit.edu</option>
+                                
+                                    <option value=".student.mit.edu">.student.mit.edu</option>
+                                
+                                    <option value=".shimmer.mit.edu">.shimmer.mit.edu</option>
+                                
+                                    <option value=".atlas-auth.mit.edu">.atlas-auth.mit.edu</option>
+                                
+                                    <option value=".mit.starrezhousing.com">.mit.starrezhousing.com</option>
+                                
+                                    <option value=".mit.zoom.us">.mit.zoom.us</option>
+                                
+                                    <option value=".fireroad.mit.edu">.fireroad.mit.edu</option>
+                                
+                                    <option value=".api-18611828.duosecurity.com">.api-18611828.duosecurity.com</option>
+                                
+                                    <option value=".duo.mit.edu">.duo.mit.edu</option>
+                                
+                                    <option value=".downloads.mit.edu">.downloads.mit.edu</option>
+                                
+                                    <option value=".eecseduportal.mit.edu">.eecseduportal.mit.edu</option>
+                                
+                                    <option value=".sites.mit.edu">.sites.mit.edu</option>
+                                
+                                    <option value=".googleusercontent.com">.googleusercontent.com</option>
+                                
+                                    <option value=".freeconvert.com">.freeconvert.com</option>
+                                
+                                    <option value=".huffpost.com">.huffpost.com</option>
+                                
+                                    <option value=".wcvb.com">.wcvb.com</option>
+                                
+                                    <option value=".13wmaz.com">.13wmaz.com</option>
+                                
+                                    <option value=".webcamera.io">.webcamera.io</option>
+                                
+                                    <option value=".askubuntu.com">.askubuntu.com</option>
+                                
+                                    <option value=".maps.google.com">.maps.google.com</option>
+                                
+                                    <option value=".books.google.com">.books.google.com</option>
+                                
+                                    <option value=".honeygrow.com">.honeygrow.com</option>
+                                
+                                    <option value=".visjs.github.io">.visjs.github.io</option>
+                                
+                                    <option value=".plotly.com">.plotly.com</option>
+                                
+                                    <option value=".tidal.com">.tidal.com</option>
+                                
+                                    <option value=".geeksforgeeks.org">.geeksforgeeks.org</option>
+                                
+                                    <option value=".sqlitetutorial.net">.sqlitetutorial.net</option>
+                                
+                                    <option value=".math.stackexchange.com">.math.stackexchange.com</option>
+                                
+                                    <option value=".intrologic.stanford.edu">.intrologic.stanford.edu</option>
+                                
+                                    <option value=".foxtonforensics.com">.foxtonforensics.com</option>
+                                
+                                    <option value=".ellen.dev">.ellen.dev</option>
+                                
+                                    <option value=".linuxvox.com">.linuxvox.com</option>
+                                
+                                    <option value=".ist.mit.edu">.ist.mit.edu</option>
+                                
+                                    <option value=".kb.mit.edu">.kb.mit.edu</option>
+                                
+                                    <option value=".cloud.securew2.com">.cloud.securew2.com</option>
+                                
+                                    <option value=".getonline.harvard.edu">.getonline.harvard.edu</option>
+                                
+                                    <option value=".detectportal.firefox.com">.detectportal.firefox.com</option>
+                                
+                                    <option value=".decisionproblem.com">.decisionproblem.com</option>
+                                
+                                    <option value=".khoury.northeastern.edu">.khoury.northeastern.edu</option>
+                                
+                                    <option value=".ctan.math.illinois.edu">.ctan.math.illinois.edu</option>
+                                
+                                    <option value=".mirrors.ctan.org">.mirrors.ctan.org</option>
+                                
+                                    <option value=".ctan.org">.ctan.org</option>
+                                
+                                    <option value=".mirrors.ibiblio.org">.mirrors.ibiblio.org</option>
+                                
+                                    <option value=".tex.stackexchange.com">.tex.stackexchange.com</option>
+                                
+                                    <option value=".tug.org">.tug.org</option>
+                                
+                                    <option value=".ca.mit.edu">.ca.mit.edu</option>
+                                
+                                    <option value=".nirsoft.net">.nirsoft.net</option>
+                                
+                                    <option value=".en.wikiversity.org">.en.wikiversity.org</option>
+                                
+                                    <option value=".citi.com">.citi.com</option>
+                                
+                                    <option value=".underground-guide.mit.edu">.underground-guide.mit.edu</option>
+                                
+                                    <option value=".hydrant.mit.edu">.hydrant.mit.edu</option>
+                                
+                                    <option value=".hilton.com">.hilton.com</option>
+                                
+                                    <option value=".secure.guestinternet.com">.secure.guestinternet.com</option>
+                                
+                                    <option value=".bospb.cust.blueprintrf.com">.bospb.cust.blueprintrf.com</option>
+                                
+                                    <option value=".secure.11os.com">.secure.11os.com</option>
+                                
+                                    <option value=".help.vivaldi.com">.help.vivaldi.com</option>
+                                
+                                    <option value=".forum.vivaldi.net">.forum.vivaldi.net</option>
+                                
+                                    <option value=".login.live.com">.login.live.com</option>
+                                
+                                    <option value=".account.live.com">.account.live.com</option>
+                                
+                                    <option value=".cloud.wikis.utexas.edu">.cloud.wikis.utexas.edu</option>
+                                
+                                    <option value=".wikis.utexas.edu">.wikis.utexas.edu</option>
+                                
+                                    <option value=".learn.microsoft.com">.learn.microsoft.com</option>
+                                
+                                    <option value=".downloads.vivaldi.com">.downloads.vivaldi.com</option>
+                                
+                                    <option value=".vivaldi.com">.vivaldi.com</option>
+                                
+                                    <option value=".boxd.it">.boxd.it</option>
+                                
+                                    <option value=".obsidian.md">.obsidian.md</option>
+                                
+                                    <option value=".mittakedaprogram.mit.edu">.mittakedaprogram.mit.edu</option>
+                                
+                                    <option value=".adg.csail.mit.edu">.adg.csail.mit.edu</option>
+                                
+                                    <option value=".genius.com">.genius.com</option>
+                                
+                                    <option value=".marketplace.visualstudio.com">.marketplace.visualstudio.com</option>
+                                
+                                    <option value=".dev.to">.dev.to</option>
+                                
+                                    <option value=".joshcollinsworth.com">.joshcollinsworth.com</option>
+                                
+                                    <option value=".learn.svelte.dev">.learn.svelte.dev</option>
+                                
+                                    <option value=".kit.svelte.dev">.kit.svelte.dev</option>
+                                
+                                    <option value=".cemeterysummoning.github.io">.cemeterysummoning.github.io</option>
+                                
+                                    <option value=".bryananthonio.com">.bryananthonio.com</option>
+                                
+                                    <option value=".website-v2-7qne7hx63-cemeterysummonings-projects.vercel.app">.website-v2-7qne7hx63-cemeterysummonings-projects.vercel.app</option>
+                                
+                                    <option value=".svgrepo.com">.svgrepo.com</option>
+                                
+                                    <option value=".codesandbox.io">.codesandbox.io</option>
+                                
+                                    <option value=".shadcn-svelte.com">.shadcn-svelte.com</option>
+                                
+                                    <option value=".vim.rtorr.com">.vim.rtorr.com</option>
+                                
+                                    <option value=".builder.io">.builder.io</option>
+                                
+                                    <option value=".website-v2-tau-gules.vercel.app">.website-v2-tau-gules.vercel.app</option>
+                                
+                                    <option value=".ticketmaster.com">.ticketmaster.com</option>
+                                
+                                    <option value=".superuser.com">.superuser.com</option>
+                                
+                                    <option value=".sw.kovidgoyal.net">.sw.kovidgoyal.net</option>
+                                
+                                    <option value=".maxwellrules.com">.maxwellrules.com</option>
+                                
+                                    <option value=".windsurf.com">.windsurf.com</option>
+                                
+                                    <option value=".codeium.com">.codeium.com</option>
+                                
+                                    <option value=".apps.cirrusidentity.com">.apps.cirrusidentity.com</option>
+                                
+                                    <option value=".fadata.mit.edu">.fadata.mit.edu</option>
+                                
+                                    <option value=".eecs.mit.edu">.eecs.mit.edu</option>
+                                
+                                    <option value=".notion.so">.notion.so</option>
+                                
+                                    <option value=".notion.com">.notion.com</option>
+                                
+                                    <option value=".researchgate.net">.researchgate.net</option>
+                                
+                                    <option value=".topoi.net">.topoi.net</option>
+                                
+                                    <option value=".dropbox.com">.dropbox.com</option>
+                                
+                                    <option value=".polyinnovator.space">.polyinnovator.space</option>
+                                
+                                    <option value=".fastmachinelearning.org">.fastmachinelearning.org</option>
+                                
+                                    <option value=".arxiv.org">.arxiv.org</option>
+                                
+                                    <option value=".careers.ibm.com">.careers.ibm.com</option>
+                                
+                                    <option value=".qmunity.thequantuminsider.com">.qmunity.thequantuminsider.com</option>
+                                
+                                    <option value=".ibm.com">.ibm.com</option>
+                                
+                                    <option value=".programmes.polytechnique.edu">.programmes.polytechnique.edu</option>
+                                
+                                    <option value=".ip-paris.fr">.ip-paris.fr</option>
+                                
+                                    <option value=".tudelft.nl">.tudelft.nl</option>
+                                
+                                    <option value=".journals.aps.org">.journals.aps.org</option>
+                                
+                                    <option value=".link.aps.org">.link.aps.org</option>
+                                
+                                    <option value=".wayfinder.openathens.net">.wayfinder.openathens.net</option>
+                                
+                                    <option value=".architecture.mit.edu">.architecture.mit.edu</option>
+                                
+                                    <option value=".sisapp.mit.edu">.sisapp.mit.edu</option>
+                                
+                                    <option value=".mitadmissions.org">.mitadmissions.org</option>
+                                
+                                    <option value=".lps.umd.edu">.lps.umd.edu</option>
+                                
+                                    <option value=".megamitensei.fandom.com">.megamitensei.fandom.com</option>
+                                
+                                    <option value=".moma.org">.moma.org</option>
+                                
+                                    <option value=".websis.mit.edu">.websis.mit.edu</option>
+                                
+                                    <option value=".registrar.mit.edu">.registrar.mit.edu</option>
+                                
+                                    <option value=".misti.mit.edu">.misti.mit.edu</option>
+                                
+                                    <option value=".matplotlib.org">.matplotlib.org</option>
+                                
+                                    <option value=".bungostraydogs.fandom.com">.bungostraydogs.fandom.com</option>
+                                
+                                    <option value=".ocw.mit.edu">.ocw.mit.edu</option>
+                                
+                                    <option value=".yaledailynews.com">.yaledailynews.com</option>
+                                
+                                    <option value=".community.tiller.com">.community.tiller.com</option>
+                                
+                                    <option value=".secure.chase.com">.secure.chase.com</option>
+                                
+                                    <option value=".account.chase.com">.account.chase.com</option>
+                                
+                                    <option value=".usa.experian.com">.usa.experian.com</option>
+                                
+                                    <option value=".experian.com">.experian.com</option>
+                                
+                                    <option value=".mastercard.com">.mastercard.com</option>
+                                
+                                    <option value=".mastercard.us">.mastercard.us</option>
+                                
+                                    <option value=".sofi.com">.sofi.com</option>
+                                
+                                    <option value=".nerdwallet.com">.nerdwallet.com</option>
+                                
+                                    <option value=".acephale.info">.acephale.info</option>
+                                
+                                    <option value=".nosubject.com">.nosubject.com</option>
+                                
+                                    <option value=".cpb-us-e1.wpmucdn.com">.cpb-us-e1.wpmucdn.com</option>
+                                
+                                    <option value=".etsy.com">.etsy.com</option>
+                                
+                                    <option value=".acidhorizonpodcast.com">.acidhorizonpodcast.com</option>
+                                
+                                    <option value=".contagionpress.com">.contagionpress.com</option>
+                                
+                                    <option value=".youtube.com">.youtube.com</option>
+                                
+                                    <option value=".youtu.be">.youtu.be</option>
+                                
+                                    <option value=".mission17.org">.mission17.org</option>
+                                
+                                    <option value=".bpb-us-e1.wpmucdn.com">.bpb-us-e1.wpmucdn.com</option>
+                                
+                                    <option value=".boundarylanguage.psu.edu">.boundarylanguage.psu.edu</option>
+                                
+                                    <option value=".ipsa.psu.edu">.ipsa.psu.edu</option>
+                                
+                                    <option value=".calendar.notion.so">.calendar.notion.so</option>
+                                
+                                    <option value=".marketplace.zoom.us">.marketplace.zoom.us</option>
+                                
+                                    <option value=".openstax.org">.openstax.org</option>
+                                
+                                    <option value=".kinetic.openstax.org">.kinetic.openstax.org</option>
+                                
+                                    <option value=".cvat.ai">.cvat.ai</option>
+                                
+                                    <option value=".docs.cvat.ai">.docs.cvat.ai</option>
+                                
+                                    <option value=".crummy.com">.crummy.com</option>
+                                
+                                    <option value=".pypi.org">.pypi.org</option>
+                                
+                                    <option value=".teddykw2.wordpress.com">.teddykw2.wordpress.com</option>
+                                
+                                    <option value=".teddykw2.files.wordpress.com">.teddykw2.files.wordpress.com</option>
+                                
+                                    <option value=".solidaritycinema.com">.solidaritycinema.com</option>
+                                
+                                    <option value=".putz.mit.edu">.putz.mit.edu</option>
+                                
+                                    <option value=".blog.archive.org">.blog.archive.org</option>
+                                
+                                    <option value=".eecsla.mit.edu">.eecsla.mit.edu</option>
+                                
+                                    <option value=".wayf.mit.edu">.wayf.mit.edu</option>
+                                
+                                    <option value=".py.mit.edu">.py.mit.edu</option>
+                                
+                                    <option value=".brand.mit.edu">.brand.mit.edu</option>
+                                
+                                    <option value=".scipost.org">.scipost.org</option>
+                                
+                                    <option value=".onr.navy.mil">.onr.navy.mil</option>
+                                
+                                    <option value=".research.illinois.edu">.research.illinois.edu</option>
+                                
+                                    <option value=".pubs.aip.org">.pubs.aip.org</option>
+                                
+                                    <option value=".colorado.edu">.colorado.edu</option>
+                                
+                                    <option value=".cqe.mit.edu">.cqe.mit.edu</option>
+                                
+                                    <option value=".amazon.com">.amazon.com</option>
+                                
+                                    <option value=".a.co">.a.co</option>
+                                
+                                    <option value=".docs.github.com">.docs.github.com</option>
+                                
+                                    <option value=".tumblr.com">.tumblr.com</option>
+                                
+                                    <option value=".dxsxdxrium.tumblr.com">.dxsxdxrium.tumblr.com</option>
+                                
+                                    <option value=".mgregersen.dk">.mgregersen.dk</option>
+                                
+                                    <option value=".gwu.edu">.gwu.edu</option>
+                                
+                                    <option value=".cppmadmin.it.gwu.edu">.cppmadmin.it.gwu.edu</option>
+                                
+                                    <option value=".tutorialspoint.com">.tutorialspoint.com</option>
+                                
+                                    <option value=".caniuse.com">.caniuse.com</option>
+                                
+                                    <option value=".s181.convertio.me">.s181.convertio.me</option>
+                                
+                                    <option value=".convertio.co">.convertio.co</option>
+                                
+                                    <option value=".last.fm">.last.fm</option>
+                                
+                                    <option value=".mbhsmagnet.org">.mbhsmagnet.org</option>
+                                
+                                    <option value=".steelcitycodes.org">.steelcitycodes.org</option>
+                                
+                                    <option value=".ccrl.umd.edu">.ccrl.umd.edu</option>
+                                
+                                    <option value=".beaverworks.ll.mit.edu">.beaverworks.ll.mit.edu</option>
+                                
+                                    <option value=".futuretech.mit.edu">.futuretech.mit.edu</option>
+                                
+                                    <option value=".nist.gov">.nist.gov</option>
+                                
+                                    <option value=".random-ize.com">.random-ize.com</option>
+                                
+                                    <option value=".smarthistory.org">.smarthistory.org</option>
+                                
+                                    <option value=".sts-program.mit.edu">.sts-program.mit.edu</option>
+                                
+                                    <option value=".mit.edu">.mit.edu</option>
+                                
+                                    <option value=".cran.r-project.org">.cran.r-project.org</option>
+                                
+                                    <option value=".alpha.nist.gov">.alpha.nist.gov</option>
+                                
+                                    <option value=".v1.tailwindcss.com">.v1.tailwindcss.com</option>
+                                
+                                    <option value=".forum.freecodecamp.org">.forum.freecodecamp.org</option>
+                                
+                                    <option value=".w3.org">.w3.org</option>
+                                
+                                    <option value=".flowbite.com">.flowbite.com</option>
+                                
+                                    <option value=".tiktok.com">.tiktok.com</option>
+                                
+                                    <option value=".figma.com">.figma.com</option>
+                                
+                                    <option value=".fonts.google.com">.fonts.google.com</option>
+                                
+                                    <option value=".tracyssewingstudio.com">.tracyssewingstudio.com</option>
+                                
+                                    <option value=".wikihow.com">.wikihow.com</option>
+                                
+                                    <option value=".linktr.ee">.linktr.ee</option>
+                                
+                                    <option value=".l.instagram.com">.l.instagram.com</option>
+                                
+                                    <option value=".vscode.download.prss.microsoft.com">.vscode.download.prss.microsoft.com</option>
+                                
+                                    <option value=".code.visualstudio.com">.code.visualstudio.com</option>
+                                
+                                    <option value=".nodejs.org">.nodejs.org</option>
+                                
+                                    <option value=".docs.astro.build">.docs.astro.build</option>
+                                
+                                    <option value=".johnnydecimal.com">.johnnydecimal.com</option>
+                                
+                                    <option value=".willhath.com">.willhath.com</option>
+                                
+                                    <option value=".mit.us22.list-manage.com">.mit.us22.list-manage.com</option>
+                                
+                                    <option value=".mitguidetoresidences.mit.edu">.mitguidetoresidences.mit.edu</option>
+                                
+                                    <option value=".studentlife.mit.edu">.studentlife.mit.edu</option>
+                                
+                                    <option value=".app.zoom.us">.app.zoom.us</option>
+                                
+                                    <option value=".umd.zoom.us">.umd.zoom.us</option>
+                                
+                                    <option value=".idss.mit.edu">.idss.mit.edu</option>
+                                
+                                    <option value=".catalog.mit.edu">.catalog.mit.edu</option>
+                                
+                                    <option value=".elx.mit.edu">.elx.mit.edu</option>
+                                
+                                    <option value=".latex2image.joeraut.com">.latex2image.joeraut.com</option>
+                                
+                                    <option value=".stopkosa.com">.stopkosa.com</option>
+                                
+                                    <option value=".xmortis.com">.xmortis.com</option>
+                                
+                                    <option value=".astroship.web3templates.com">.astroship.web3templates.com</option>
+                                
+                                    <option value=".stackblitz.com">.stackblitz.com</option>
+                                
+                                    <option value=".nngroup.com">.nngroup.com</option>
+                                
+                                    <option value=".forum.squarespace.com">.forum.squarespace.com</option>
+                                
+                                    <option value=".flickr.com">.flickr.com</option>
+                                
+                                    <option value=".ladyada.net">.ladyada.net</option>
+                                
+                                    <option value=".adafruit.com">.adafruit.com</option>
+                                
+                                    <option value=".mitpress.mit.edu">.mitpress.mit.edu</option>
+                                
+                                    <option value=".make.mit.edu">.make.mit.edu</option>
+                                
+                                    <option value=".project-manus.libcal.com">.project-manus.libcal.com</option>
+                                
+                                    <option value=".when2meet.com">.when2meet.com</option>
+                                
+                                    <option value=".pimeyes.com">.pimeyes.com</option>
+                                
+                                    <option value=".facecheck.id">.facecheck.id</option>
+                                
+                                    <option value=".nikola.fluidinterfaces.com">.nikola.fluidinterfaces.com</option>
+                                
+                                    <option value=".getbootstrap.com">.getbootstrap.com</option>
+                                
+                                    <option value=".discourse.gohugo.io">.discourse.gohugo.io</option>
+                                
+                                    <option value=".netlify.com">.netlify.com</option>
+                                
+                                    <option value=".my.clevelandclinic.org">.my.clevelandclinic.org</option>
+                                
+                                    <option value=".americanexpress.com">.americanexpress.com</option>
+                                
+                                    <option value=".goto.americanexpress.com">.goto.americanexpress.com</option>
+                                
+                                    <option value=".urop.mit.edu">.urop.mit.edu</option>
+                                
+                                    <option value=".mit.studentemployment.ngwebsolutions.com">.mit.studentemployment.ngwebsolutions.com</option>
+                                
+                                    <option value=".mailman.mit.edu">.mailman.mit.edu</option>
+                                
+                                    <option value=".zoom.com">.zoom.com</option>
+                                
+                                    <option value=".zoom.us">.zoom.us</option>
+                                
+                                    <option value=".support.zoom.com">.support.zoom.com</option>
+                                
+                                    <option value=".introml.mit.edu">.introml.mit.edu</option>
+                                
+                                    <option value=".sigmaaldrich.com">.sigmaaldrich.com</option>
+                                
+                                    <option value=".themoviedb.org">.themoviedb.org</option>
+                                
+                                    <option value=".eriksson.physics.wisc.edu">.eriksson.physics.wisc.edu</option>
+                                
+                                    <option value=".physics.wisc.edu">.physics.wisc.edu</option>
+                                
+                                    <option value=".baeldung.com">.baeldung.com</option>
+                                
+                                    <option value=".science.smith.edu">.science.smith.edu</option>
+                                
+                                    <option value=".courseroad.mit.edu">.courseroad.mit.edu</option>
+                                
+                                    <option value=".people.csail.mit.edu">.people.csail.mit.edu</option>
+                                
+                                    <option value=".uvm.edu">.uvm.edu</option>
+                                
+                                    <option value=".dokumen.pub">.dokumen.pub</option>
+                                
+                                    <option value=".oa.mg">.oa.mg</option>
+                                
+                                    <option value=".stats.stackexchange.com">.stats.stackexchange.com</option>
+                                
+                                    <option value=".mediaperipheries.otago.ac.nz">.mediaperipheries.otago.ac.nz</option>
+                                
+                                    <option value=".othervoices.org">.othervoices.org</option>
+                                
+                                    <option value=".tandfonline.com">.tandfonline.com</option>
+                                
+                                    <option value=".songsterr.com">.songsterr.com</option>
+                                
+                                    <option value=".woodsholefilmfestival.org">.woodsholefilmfestival.org</option>
+                                
+                                    <option value=".talamas.com">.talamas.com</option>
+                                
+                                    <option value=".woods-hole-film-festival.square.site">.woods-hole-film-festival.square.site</option>
+                                
+                                    <option value=".quantumcomputing.stackexchange.com">.quantumcomputing.stackexchange.com</option>
+                                
+                                    <option value=".inspirehep.net">.inspirehep.net</option>
+                                
+                                    <option value=".scholar.google.com">.scholar.google.com</option>
+                                
+                                    <option value=".medlinks.mit.edu">.medlinks.mit.edu</option>
+                                
+                                    <option value=".chase.com">.chase.com</option>
+                                
+                                    <option value=".dolanuyghur.com">.dolanuyghur.com</option>
+                                
+                                    <option value=".i.sstatic.net">.i.sstatic.net</option>
+                                
+                                    <option value=".gis.stackexchange.com">.gis.stackexchange.com</option>
+                                
+                                    <option value=".numpy.org">.numpy.org</option>
+                                
+                                    <option value=".futurelearn.com">.futurelearn.com</option>
+                                
+                                    <option value=".starrez.com">.starrez.com</option>
+                                
+                                    <option value=".geogebra.org">.geogebra.org</option>
+                                
+                                    <option value=".desmos.com">.desmos.com</option>
+                                
+                                    <option value=".labelme.io">.labelme.io</option>
+                                
+                                    <option value=".elilifland.com">.elilifland.com</option>
+                                
+                                    <option value=".philosophy.stackexchange.com">.philosophy.stackexchange.com</option>
+                                
+                                    <option value=".physics.stackexchange.com">.physics.stackexchange.com</option>
+                                
+                                    <option value=".qudev.phys.ethz.ch">.qudev.phys.ethz.ch</option>
+                                
+                                    <option value=".diy.stackexchange.com">.diy.stackexchange.com</option>
+                                
+                                    <option value=".silver.afi.com">.silver.afi.com</option>
+                                
+                                    <option value=".afisilver.afi.com">.afisilver.afi.com</option>
+                                
+                                    <option value=".imdb.com">.imdb.com</option>
+                                
+                                    <option value=".megacityreview.org">.megacityreview.org</option>
+                                
+                                    <option value=".imgflip.com">.imgflip.com</option>
+                                
+                                    <option value=".lacan.com">.lacan.com</option>
+                                
+                                    <option value=".redactle.net">.redactle.net</option>
+                                
+                                    <option value=".redactle-unlimited.com">.redactle-unlimited.com</option>
+                                
+                                    <option value=".redactle.anybrowser.org">.redactle.anybrowser.org</option>
+                                
+                                    <option value=".quora.com">.quora.com</option>
+                                
+                                    <option value=".xenopraxis.net">.xenopraxis.net</option>
+                                
+                                    <option value=".monoskop.org">.monoskop.org</option>
+                                
+                                    <option value=".marcuse.org">.marcuse.org</option>
+                                
+                                    <option value=".lunaimaging.com">.lunaimaging.com</option>
+                                
+                                    <option value=".help.archive.org">.help.archive.org</option>
+                                
+                                    <option value=".blog.rayberger.org">.blog.rayberger.org</option>
+                                
+                                    <option value=".rayberger.org">.rayberger.org</option>
+                                
+                                    <option value=".contribute.cncf.io">.contribute.cncf.io</option>
+                                
+                                    <option value=".open.spotify.com">.open.spotify.com</option>
+                                
+                                    <option value=".nerdfighteria.info">.nerdfighteria.info</option>
+                                
+                                    <option value=".yesstyle.com">.yesstyle.com</option>
+                                
+                                    <option value=".melanocc.com.my">.melanocc.com.my</option>
+                                
+                                    <option value=".japanesetaste.com">.japanesetaste.com</option>
+                                
+                                    <option value=".dbknews.com">.dbknews.com</option>
+                                
+                                    <option value=".uwprod-my.sharepoint.com">.uwprod-my.sharepoint.com</option>
+                                
+                                    <option value=".carlkho-cvk.medium.com">.carlkho-cvk.medium.com</option>
+                                
+                                    <option value=".t-mobile.com">.t-mobile.com</option>
+                                
+                                    <option value=".highonfilms.com">.highonfilms.com</option>
+                                
+                                    <option value=".origami-art.us">.origami-art.us</option>
+                                
+                                    <option value=".homepages.inf.ed.ac.uk">.homepages.inf.ed.ac.uk</option>
+                                
+                                    <option value=".students.care26.com">.students.care26.com</option>
+                                
+                                    <option value=".auth.care26.com">.auth.care26.com</option>
+                                
+                                    <option value=".email1.ahpcare.com">.email1.ahpcare.com</option>
+                                
+                                    <option value=".email.ahpcare.com">.email.ahpcare.com</option>
+                                
+                                    <option value=".math.purdue.edu">.math.purdue.edu</option>
+                                
+                                    <option value=".alamo.edu">.alamo.edu</option>
+                                
+                                    <option value=".education.launchcode.org">.education.launchcode.org</option>
+                                
+                                    <option value=".packaging.python.org">.packaging.python.org</option>
+                                
+                                    <option value=".docs.python.org">.docs.python.org</option>
+                                
+                                    <option value=".discourse.matplotlib.org">.discourse.matplotlib.org</option>
+                                
+                                    <option value=".opencv.org">.opencv.org</option>
+                                
+                                    <option value=".analyticsvidhya.com">.analyticsvidhya.com</option>
+                                
+                                    <option value=".qce.quantum.ieee.org">.qce.quantum.ieee.org</option>
+                                
+                                    <option value=".weeavemagazine.com">.weeavemagazine.com</option>
+                                
+                                    <option value=".instagram.com">.instagram.com</option>
+                                
+                                    <option value=".veganiac.com">.veganiac.com</option>
+                                
+                                    <option value=".act.mit.edu">.act.mit.edu</option>
+                                
+                                    <option value=".discuss.pytorch.org">.discuss.pytorch.org</option>
+                                
+                                    <option value=".linkedin.com">.linkedin.com</option>
+                                
+                                    <option value=".tuatini.me">.tuatini.me</option>
+                                
+                                    <option value=".qupath.readthedocs.io">.qupath.readthedocs.io</option>
+                                
+                                    <option value=".iagsdc.org">.iagsdc.org</option>
+                                
+                                    <option value=".spirit.com">.spirit.com</option>
+                                
+                                    <option value=".orcid.org">.orcid.org</option>
+                                
+                                    <option value=".nkimillustrate.weebly.com">.nkimillustrate.weebly.com</option>
+                                
+                                    <option value=".nkim-illustrates.tumblr.com">.nkim-illustrates.tumblr.com</option>
+                                
+                                    <option value=".somervilletheatre.com">.somervilletheatre.com</option>
+                                
+                                    <option value=".screenboston.com">.screenboston.com</option>
+                                
+                                    <option value=".urbanomic.com">.urbanomic.com</option>
+                                
+                                    <option value=".antithesi.gr">.antithesi.gr</option>
+                                
+                                    <option value=".blacksmithgu.github.io">.blacksmithgu.github.io</option>
+                                
+                                    <option value=".viagogo.com">.viagogo.com</option>
+                                
+                                    <option value=".wanderu.com">.wanderu.com</option>
+                                
+                                    <option value=".eventbrite.com">.eventbrite.com</option>
+                                
+                                    <option value=".">.</option>
+                                
+                                    <option value=".facelessuser.github.io">.facelessuser.github.io</option>
+                                
+                                    <option value=".entroplay.world">.entroplay.world</option>
+                                
+                                    <option value=".ab-intio.mit.edu">.ab-intio.mit.edu</option>
+                                
+                                    <option value=".news.ycombinator.com">.news.ycombinator.com</option>
+                                
+                                    <option value=".alexlenail.me">.alexlenail.me</option>
+                                
+                                    <option value=".gnome.pages.gitlab.gnome.org">.gnome.pages.gitlab.gnome.org</option>
+                                
+                                    <option value=".sookkyungart.com">.sookkyungart.com</option>
+                                
+                                    <option value=".viz.com">.viz.com</option>
+                                
+                                    <option value=".doc.csod.com">.doc.csod.com</option>
+                                
+                                    <option value=".cs.unc.edu">.cs.unc.edu</option>
+                                
+                                    <option value=".asr.github.io">.asr.github.io</option>
+                                
+                                    <option value=".clickylist.com">.clickylist.com</option>
+                                
+                                    <option value=".simpleanalytics.com">.simpleanalytics.com</option>
+                                
+                                    <option value=".debracollege.dspaces.org">.debracollege.dspaces.org</option>
+                                
+                                    <option value=".slingacademy.com">.slingacademy.com</option>
+                                
+                                    <option value=".engage.mit.edu">.engage.mit.edu</option>
+                                
+                                    <option value=".webextension.org">.webextension.org</option>
+                                
+                                    <option value=".addons.mozilla.org">.addons.mozilla.org</option>
+                                
+                                    <option value=".movies.mit.edu">.movies.mit.edu</option>
+                                
+                                    <option value=".nerdfonts.com">.nerdfonts.com</option>
+                                
+                                    <option value=".flowbite-svelte.com">.flowbite-svelte.com</option>
+                                
+                                    <option value=".learncpp.com">.learncpp.com</option>
+                                
+                                    <option value=".app.bold.org">.app.bold.org</option>
+                                
+                                    <option value=".leoyablans.medium.com">.leoyablans.medium.com</option>
+                                
+                                    <option value=".theanarchistlibrary.org">.theanarchistlibrary.org</option>
+                                
+                                    <option value=".eroseffect.com">.eroseffect.com</option>
+                                
+                                    <option value=".theoccupiedtimes.org">.theoccupiedtimes.org</option>
+                                
+                                    <option value=".ethicalpolitics.org">.ethicalpolitics.org</option>
+                                
+                                    <option value=".tate.org.uk">.tate.org.uk</option>
+                                
+                                    <option value=".secure.touchnet.net">.secure.touchnet.net</option>
+                                
+                                    <option value=".famouspictures.org">.famouspictures.org</option>
+                                
+                                    <option value=".thetech.com">.thetech.com</option>
+                                
+                                    <option value=".downforacross.com">.downforacross.com</option>
+                                
+                                    <option value=".catfishing.net">.catfishing.net</option>
+                                
+                                    <option value=".costco.com">.costco.com</option>
+                                
+                                    <option value=".vite.dev">.vite.dev</option>
+                                
+                                    <option value=".pbs.org">.pbs.org</option>
+                                
+                                    <option value=".mbhs.edu">.mbhs.edu</option>
+                                
+                                    <option value=".sts.mit.edu">.sts.mit.edu</option>
+                                
+                                    <option value=".static1.squarespace.com">.static1.squarespace.com</option>
+                                
+                                    <option value=".theproofistrivial.com">.theproofistrivial.com</option>
+                                
+                                    <option value=".discover.com">.discover.com</option>
+                                
+                                    <option value=".starrezhousing.com">.starrezhousing.com</option>
+                                
+                                    <option value=".cloudflare.com">.cloudflare.com</option>
+                                
+                                    <option value=".mit.joinhandshake.com">.mit.joinhandshake.com</option>
+                                
+                                    <option value=".whereis.mit.edu">.whereis.mit.edu</option>
+                                
+                                    <option value=".ngedaily.tumblr.com">.ngedaily.tumblr.com</option>
+                                
+                                    <option value=".mitprod-my.sharepoint.com">.mitprod-my.sharepoint.com</option>
+                                
+                                    <option value=".dwebcamp.org">.dwebcamp.org</option>
+                                
+                                    <option value=".qbreader.org">.qbreader.org</option>
+                                
+                                    <option value=".chatgpt.com">.chatgpt.com</option>
+                                
+                                    <option value=".hmart.com">.hmart.com</option>
+                                
+                                    <option value=".digitalocean.com">.digitalocean.com</option>
+                                
+                                    <option value=".baby-name.kr">.baby-name.kr</option>
+                                
+                                    <option value=".files.libcom.org">.files.libcom.org</option>
+                                
+                                    <option value=".fax.plus">.fax.plus</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#b1aad8", "id": ".docs.google.com", "label": "", "shape": "dot", "size": 35, "title": ".docs.google.com"}, {"color": "#acaed2", "id": ".drive.google.com", "label": "", "shape": "dot", "size": 6, "title": ".drive.google.com"}, {"color": "#99bdbb", "id": ".docs.new", "label": "", "shape": "dot", "size": 1, "title": ".docs.new"}, {"color": "#ada3e9", "id": ".accounts.google.com", "label": "", "shape": "dot", "size": 5, "title": ".accounts.google.com"}, {"color": "#ca9ee6", "id": ".accounts.youtube.com", "label": "", "shape": "dot", "size": 1, "title": ".accounts.youtube.com"}, {"color": "#a6acd9", "id": ".bit.ly", "label": "", "shape": "dot", "size": 2, "title": ".bit.ly"}, {"color": "#9bc0b3", "id": ".slides.google.com", "label": "", "shape": "dot", "size": 1, "title": ".slides.google.com"}, {"color": "#ca9ee6", "id": ".forms.gle", "label": "", "shape": "dot", "size": 1, "title": ".forms.gle"}, {"color": "#aba4ea", "id": ".shorturl.at", "label": "", "shape": "dot", "size": 1, "title": ".shorturl.at"}, {"color": "#99bdbb", "id": ".drawings.google.com", "label": "", "shape": "dot", "size": 1, "title": ".drawings.google.com"}, {"color": "#b0b4c2", "id": ".google.com", "label": "", "shape": "dot", "size": 28, "title": ".google.com"}, {"color": "#b0acd3", "id": ".localhost", "label": "", "shape": "dot", "size": 15, "title": ".localhost"}, {"color": "#bab3be", "id": ".chun.cat", "label": "", "shape": "dot", "size": 7, "title": ".chun.cat"}, {"color": "#aab0ce", "id": ".mail.google.com", "label": "", "shape": "dot", "size": 7, "title": ".mail.google.com"}, {"color": "#aea3e9", "id": ".login.tidal.com", "label": "", "shape": "dot", "size": 1, "title": ".login.tidal.com"}, {"color": "#adb0cc", "id": ".messages.google.com", "label": "", "shape": "dot", "size": 8, "title": ".messages.google.com"}, {"color": "#a0a6eb", "id": ".play.google.com", "label": "", "shape": "dot", "size": 1, "title": ".play.google.com"}, {"color": "#8caaee", "id": ".workspace.google.com", "label": "", "shape": "dot", "size": 1, "title": ".workspace.google.com"}, {"color": "#a9b2cb", "id": ".calendar.google.com", "label": "", "shape": "dot", "size": 3, "title": ".calendar.google.com"}, {"color": "#a8b1cd", "id": ".overleaf.com", "label": "", "shape": "dot", "size": 4, "title": ".overleaf.com"}, {"color": "#b1abd4", "id": ".x.com", "label": "", "shape": "dot", "size": 3, "title": ".x.com"}, {"color": "#a3a5ea", "id": ".google.zoom.us", "label": "", "shape": "dot", "size": 1, "title": ".google.zoom.us"}, {"color": "#aeaad8", "id": ".jstor.org", "label": "", "shape": "dot", "size": 2, "title": ".jstor.org"}, {"color": "#bca8d6", "id": ".en.wikipedia.org", "label": "", "shape": "dot", "size": 5, "title": ".en.wikipedia.org"}, {"color": "#b5b5bd", "id": ".duckduckgo.com", "label": "", "shape": "dot", "size": 9, "title": ".duckduckgo.com"}, {"color": "#ca9ee6", "id": ".sveltex.dev", "label": "", "shape": "dot", "size": 4, "title": ".sveltex.dev"}, {"color": "#ca9ee6", "id": ".pyvis.readthedocs.io", "label": "", "shape": "dot", "size": 2, "title": ".pyvis.readthedocs.io"}, {"color": "#bea0e7", "id": ".stackoverflow.com", "label": "", "shape": "dot", "size": 1, "title": ".stackoverflow.com"}, {"color": "#b1add0", "id": ".github.com", "label": "", "shape": "dot", "size": 10, "title": ".github.com"}, {"color": "#b6acd0", "id": ".reddit.com", "label": "", "shape": "dot", "size": 8, "title": ".reddit.com"}, {"color": "#ca9ee6", "id": ".preview.redd.it", "label": "", "shape": "dot", "size": 1, "title": ".preview.redd.it"}, {"color": "#ca9ee6", "id": ".beebom.com", "label": "", "shape": "dot", "size": 1, "title": ".beebom.com"}, {"color": "#ca9ee6", "id": ".medium.com", "label": "", "shape": "dot", "size": 1, "title": ".medium.com"}, {"color": "#ca9ee6", "id": ".android.com", "label": "", "shape": "dot", "size": 1, "title": ".android.com"}, {"color": "#acadd3", "id": ".canvas.mit.edu", "label": "", "shape": "dot", "size": 3, "title": ".canvas.mit.edu"}, {"color": "#ca9ee6", "id": ".sso.canvaslms.com", "label": "", "shape": "dot", "size": 1, "title": ".sso.canvaslms.com"}, {"color": "#aca3e9", "id": ".web.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".web.mit.edu"}, {"color": "#ca9ee6", "id": ".sololearn.com", "label": "", "shape": "dot", "size": 1, "title": ".sololearn.com"}, {"color": "#b5a2e8", "id": ".developer.mozilla.org", "label": "", "shape": "dot", "size": 2, "title": ".developer.mozilla.org"}, {"color": "#ca9ee6", "id": ".wiki.mozilla.org", "label": "", "shape": "dot", "size": 1, "title": ".wiki.mozilla.org"}, {"color": "#ca9ee6", "id": ".support.mozilla.org", "label": "", "shape": "dot", "size": 1, "title": ".support.mozilla.org"}, {"color": "#b3a9d8", "id": ".svelte.dev", "label": "", "shape": "dot", "size": 12, "title": ".svelte.dev"}, {"color": "#ca9ee6", "id": ".d3js.org", "label": "", "shape": "dot", "size": 1, "title": ".d3js.org"}, {"color": "#aeacd5", "id": ".catppuccin.com", "label": "", "shape": "dot", "size": 2, "title": ".catppuccin.com"}, {"color": "#aba4ea", "id": ".gist.github.com", "label": "", "shape": "dot", "size": 1, "title": ".gist.github.com"}, {"color": "#ca9ee6", "id": ".elixirforum.com", "label": "", "shape": "dot", "size": 1, "title": ".elixirforum.com"}, {"color": "#aba4ea", "id": ".gabrielatwell.com", "label": "", "shape": "dot", "size": 1, "title": ".gabrielatwell.com"}, {"color": "#acacd5", "id": ".vercel.com", "label": "", "shape": "dot", "size": 6, "title": ".vercel.com"}, {"color": "#b5adce", "id": ".crystaljjlee.com", "label": "", "shape": "dot", "size": 2, "title": ".crystaljjlee.com"}, {"color": "#c4a5d8", "id": ".tailwindcss.com", "label": "", "shape": "dot", "size": 6, "title": ".tailwindcss.com"}, {"color": "#ca9ee6", "id": ".astro.build", "label": "", "shape": "dot", "size": 2, "title": ".astro.build"}, {"color": "#ca9ee6", "id": ".npmjs.com", "label": "", "shape": "dot", "size": 1, "title": ".npmjs.com"}, {"color": "#b7a9d6", "id": ".app.cvat.ai", "label": "", "shape": "dot", "size": 6, "title": ".app.cvat.ai"}, {"color": "#c4a5d9", "id": ".archive.org", "label": "", "shape": "dot", "size": 8, "title": ".archive.org"}, {"color": "#ca9ee6", "id": ".alanzucconi.com", "label": "", "shape": "dot", "size": 1, "title": ".alanzucconi.com"}, {"color": "#a9b3c9", "id": ".playwright.dev", "label": "", "shape": "dot", "size": 1, "title": ".playwright.dev"}, {"color": "#aba4ea", "id": ".themusicemporium.com", "label": "", "shape": "dot", "size": 1, "title": ".themusicemporium.com"}, {"color": "#93b5cf", "id": ".bpl.org", "label": "", "shape": "dot", "size": 1, "title": ".bpl.org"}, {"color": "#a7a4ea", "id": ".na.network-auth.com", "label": "", "shape": "dot", "size": 1, "title": ".na.network-auth.com"}, {"color": "#b7a9d6", "id": ".ab-initio.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".ab-initio.mit.edu"}, {"color": "#b4b0c9", "id": ".math.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".math.mit.edu"}, {"color": "#ca9ee6", "id": ".inria.fr", "label": "", "shape": "dot", "size": 2, "title": ".inria.fr"}, {"color": "#aeaad8", "id": ".beepb00p.xyz", "label": "", "shape": "dot", "size": 2, "title": ".beepb00p.xyz"}, {"color": "#ca9ee6", "id": ".vineeth.io", "label": "", "shape": "dot", "size": 1, "title": ".vineeth.io"}, {"color": "#ca9ee6", "id": ".twitter.com", "label": "", "shape": "dot", "size": 1, "title": ".twitter.com"}, {"color": "#ca9ee6", "id": ".rmeit.github.io", "label": "", "shape": "dot", "size": 2, "title": ".rmeit.github.io"}, {"color": "#8caaee", "id": ".wiki.hypr.land", "label": "", "shape": "dot", "size": 1, "title": ".wiki.hypr.land"}, {"color": "#a6d189", "id": ".wiki.hyprland.org", "label": "", "shape": "dot", "size": 1, "title": ".wiki.hyprland.org"}, {"color": "#ca9ee6", "id": ".w3schools.com", "label": "", "shape": "dot", "size": 1, "title": ".w3schools.com"}, {"color": "#ca9ee6", "id": ".networkx.org", "label": "", "shape": "dot", "size": 1, "title": ".networkx.org"}, {"color": "#aba4ea", "id": ".hub.2i2c.mybinder.org", "label": "", "shape": "dot", "size": 1, "title": ".hub.2i2c.mybinder.org"}, {"color": "#ca9ee6", "id": ".mybinder.org", "label": "", "shape": "dot", "size": 1, "title": ".mybinder.org"}, {"color": "#b4b2c3", "id": ".discord.com", "label": "", "shape": "dot", "size": 33, "title": ".discord.com"}, {"color": "#b2afcd", "id": ".letterboxd.com", "label": "", "shape": "dot", "size": 15, "title": ".letterboxd.com"}, {"color": "#adacd6", "id": ".ec.mit.edu", "label": "", "shape": "dot", "size": 4, "title": ".ec.mit.edu"}, {"color": "#ca9ee6", "id": ".guitarcenter.com", "label": "", "shape": "dot", "size": 2, "title": ".guitarcenter.com"}, {"color": "#b8b7b7", "id": ".stores.guitarcenter.com", "label": "", "shape": "dot", "size": 1, "title": ".stores.guitarcenter.com"}, {"color": "#ca9ee6", "id": ".guitarworld.com", "label": "", "shape": "dot", "size": 1, "title": ".guitarworld.com"}, {"color": "#ca9ee6", "id": ".sweetwater.com", "label": "", "shape": "dot", "size": 1, "title": ".sweetwater.com"}, {"color": "#b1afcb", "id": ".outlook.office.com", "label": "", "shape": "dot", "size": 19, "title": ".outlook.office.com"}, {"color": "#ca9ee6", "id": ".login.microsoftonline.com", "label": "", "shape": "dot", "size": 1, "title": ".login.microsoftonline.com"}, {"color": "#aba4ea", "id": ".webmail.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".webmail.mit.edu"}, {"color": "#ca9ee6", "id": ".us.azureauth.duosecurity.com", "label": "", "shape": "dot", "size": 1, "title": ".us.azureauth.duosecurity.com"}, {"color": "#ca9ee6", "id": ".cm.maxient.com", "label": "", "shape": "dot", "size": 1, "title": ".cm.maxient.com"}, {"color": "#a7a4ea", "id": ".idp.mit.edu", "label": "", "shape": "dot", "size": 9, "title": ".idp.mit.edu"}, {"color": "#a7a4ea", "id": ".okta.mit.edu", "label": "", "shape": "dot", "size": 3, "title": ".okta.mit.edu"}, {"color": "#8caaee", "id": ".mit-saml.proxy.cirrusidentity.com", "label": "", "shape": "dot", "size": 1, "title": ".mit-saml.proxy.cirrusidentity.com"}, {"color": "#aba4ea", "id": ".connect.openathens.net", "label": "", "shape": "dot", "size": 1, "title": ".connect.openathens.net"}, {"color": "#b1a2e9", "id": ".eduapps.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".eduapps.mit.edu"}, {"color": "#aba4ea", "id": ".touchnet.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".touchnet.mit.edu"}, {"color": "#aca3e9", "id": ".student.mit.edu", "label": "", "shape": "dot", "size": 5, "title": ".student.mit.edu"}, {"color": "#a5a5ea", "id": ".shimmer.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".shimmer.mit.edu"}, {"color": "#ca9ee6", "id": ".atlas-auth.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".atlas-auth.mit.edu"}, {"color": "#a6aed5", "id": ".mit.starrezhousing.com", "label": "", "shape": "dot", "size": 3, "title": ".mit.starrezhousing.com"}, {"color": "#adabd8", "id": ".mit.zoom.us", "label": "", "shape": "dot", "size": 3, "title": ".mit.zoom.us"}, {"color": "#aca3e9", "id": ".fireroad.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".fireroad.mit.edu"}, {"color": "#aba4ea", "id": ".api-18611828.duosecurity.com", "label": "", "shape": "dot", "size": 6, "title": ".api-18611828.duosecurity.com"}, {"color": "#b0a2e9", "id": ".duo.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".duo.mit.edu"}, {"color": "#aba4ea", "id": ".downloads.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".downloads.mit.edu"}, {"color": "#afabd6", "id": ".eecseduportal.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".eecseduportal.mit.edu"}, {"color": "#aeacd5", "id": ".sites.mit.edu", "label": "", "shape": "dot", "size": 3, "title": ".sites.mit.edu"}, {"color": "#8caaee", "id": ".googleusercontent.com", "label": "", "shape": "dot", "size": 1, "title": ".googleusercontent.com"}, {"color": "#b0a2e9", "id": ".freeconvert.com", "label": "", "shape": "dot", "size": 2, "title": ".freeconvert.com"}, {"color": "#ca9ee6", "id": ".huffpost.com", "label": "", "shape": "dot", "size": 1, "title": ".huffpost.com"}, {"color": "#ca9ee6", "id": ".wcvb.com", "label": "", "shape": "dot", "size": 1, "title": ".wcvb.com"}, {"color": "#ca9ee6", "id": ".13wmaz.com", "label": "", "shape": "dot", "size": 1, "title": ".13wmaz.com"}, {"color": "#ca9ee6", "id": ".webcamera.io", "label": "", "shape": "dot", "size": 1, "title": ".webcamera.io"}, {"color": "#beafc7", "id": ".askubuntu.com", "label": "", "shape": "dot", "size": 1, "title": ".askubuntu.com"}, {"color": "#99bdbb", "id": ".maps.google.com", "label": "", "shape": "dot", "size": 3, "title": ".maps.google.com"}, {"color": "#ca9ee6", "id": ".books.google.com", "label": "", "shape": "dot", "size": 1, "title": ".books.google.com"}, {"color": "#ca9ee6", "id": ".honeygrow.com", "label": "", "shape": "dot", "size": 1, "title": ".honeygrow.com"}, {"color": "#ca9ee6", "id": ".visjs.github.io", "label": "", "shape": "dot", "size": 1, "title": ".visjs.github.io"}, {"color": "#ca9ee6", "id": ".plotly.com", "label": "", "shape": "dot", "size": 1, "title": ".plotly.com"}, {"color": "#b3a9d8", "id": ".tidal.com", "label": "", "shape": "dot", "size": 3, "title": ".tidal.com"}, {"color": "#ca9ee6", "id": ".geeksforgeeks.org", "label": "", "shape": "dot", "size": 1, "title": ".geeksforgeeks.org"}, {"color": "#ca9ee6", "id": ".sqlitetutorial.net", "label": "", "shape": "dot", "size": 1, "title": ".sqlitetutorial.net"}, {"color": "#a3a5ea", "id": ".math.stackexchange.com", "label": "", "shape": "dot", "size": 1, "title": ".math.stackexchange.com"}, {"color": "#ca9ee6", "id": ".intrologic.stanford.edu", "label": "", "shape": "dot", "size": 1, "title": ".intrologic.stanford.edu"}, {"color": "#ca9ee6", "id": ".foxtonforensics.com", "label": "", "shape": "dot", "size": 1, "title": ".foxtonforensics.com"}, {"color": "#ca9ee6", "id": ".ellen.dev", "label": "", "shape": "dot", "size": 1, "title": ".ellen.dev"}, {"color": "#ca9ee6", "id": ".linuxvox.com", "label": "", "shape": "dot", "size": 1, "title": ".linuxvox.com"}, {"color": "#b7a1e8", "id": ".ist.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".ist.mit.edu"}, {"color": "#b2a2e9", "id": ".kb.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".kb.mit.edu"}, {"color": "#b2a2e9", "id": ".cloud.securew2.com", "label": "", "shape": "dot", "size": 1, "title": ".cloud.securew2.com"}, {"color": "#b8a1e8", "id": ".getonline.harvard.edu", "label": "", "shape": "dot", "size": 2, "title": ".getonline.harvard.edu"}, {"color": "#ca9ee6", "id": ".detectportal.firefox.com", "label": "", "shape": "dot", "size": 1, "title": ".detectportal.firefox.com"}, {"color": "#ca9ee6", "id": ".decisionproblem.com", "label": "", "shape": "dot", "size": 1, "title": ".decisionproblem.com"}, {"color": "#a9aed2", "id": ".khoury.northeastern.edu", "label": "", "shape": "dot", "size": 1, "title": ".khoury.northeastern.edu"}, {"color": "#8caaee", "id": ".ctan.math.illinois.edu", "label": "", "shape": "dot", "size": 1, "title": ".ctan.math.illinois.edu"}, {"color": "#ca9ee6", "id": ".mirrors.ctan.org", "label": "", "shape": "dot", "size": 1, "title": ".mirrors.ctan.org"}, {"color": "#ca9ee6", "id": ".ctan.org", "label": "", "shape": "dot", "size": 1, "title": ".ctan.org"}, {"color": "#8caaee", "id": ".mirrors.ibiblio.org", "label": "", "shape": "dot", "size": 1, "title": ".mirrors.ibiblio.org"}, {"color": "#b7a1e8", "id": ".tex.stackexchange.com", "label": "", "shape": "dot", "size": 1, "title": ".tex.stackexchange.com"}, {"color": "#ca9ee6", "id": ".tug.org", "label": "", "shape": "dot", "size": 1, "title": ".tug.org"}, {"color": "#aba4ea", "id": ".ca.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".ca.mit.edu"}, {"color": "#aba4ea", "id": ".nirsoft.net", "label": "", "shape": "dot", "size": 1, "title": ".nirsoft.net"}, {"color": "#ca9ee6", "id": ".en.wikiversity.org", "label": "", "shape": "dot", "size": 1, "title": ".en.wikiversity.org"}, {"color": "#adaed2", "id": ".citi.com", "label": "", "shape": "dot", "size": 5, "title": ".citi.com"}, {"color": "#bbb2c0", "id": ".underground-guide.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".underground-guide.mit.edu"}, {"color": "#afc3a1", "id": ".hydrant.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".hydrant.mit.edu"}, {"color": "#a5a5ea", "id": ".hilton.com", "label": "", "shape": "dot", "size": 2, "title": ".hilton.com"}, {"color": "#b5a2e8", "id": ".secure.guestinternet.com", "label": "", "shape": "dot", "size": 2, "title": ".secure.guestinternet.com"}, {"color": "#ca9ee6", "id": ".bospb.cust.blueprintrf.com", "label": "", "shape": "dot", "size": 1, "title": ".bospb.cust.blueprintrf.com"}, {"color": "#8caaee", "id": ".secure.11os.com", "label": "", "shape": "dot", "size": 1, "title": ".secure.11os.com"}, {"color": "#ca9ee6", "id": ".help.vivaldi.com", "label": "", "shape": "dot", "size": 1, "title": ".help.vivaldi.com"}, {"color": "#ca9ee6", "id": ".forum.vivaldi.net", "label": "", "shape": "dot", "size": 1, "title": ".forum.vivaldi.net"}, {"color": "#8caaee", "id": ".login.live.com", "label": "", "shape": "dot", "size": 1, "title": ".login.live.com"}, {"color": "#ca9ee6", "id": ".account.live.com", "label": "", "shape": "dot", "size": 1, "title": ".account.live.com"}, {"color": "#8caaee", "id": ".cloud.wikis.utexas.edu", "label": "", "shape": "dot", "size": 1, "title": ".cloud.wikis.utexas.edu"}, {"color": "#ca9ee6", "id": ".wikis.utexas.edu", "label": "", "shape": "dot", "size": 1, "title": ".wikis.utexas.edu"}, {"color": "#ca9ee6", "id": ".learn.microsoft.com", "label": "", "shape": "dot", "size": 1, "title": ".learn.microsoft.com"}, {"color": "#8caaee", "id": ".downloads.vivaldi.com", "label": "", "shape": "dot", "size": 1, "title": ".downloads.vivaldi.com"}, {"color": "#ca9ee6", "id": ".vivaldi.com", "label": "", "shape": "dot", "size": 2, "title": ".vivaldi.com"}, {"color": "#ca9ee6", "id": ".boxd.it", "label": "", "shape": "dot", "size": 1, "title": ".boxd.it"}, {"color": "#b7a6dd", "id": ".obsidian.md", "label": "", "shape": "dot", "size": 6, "title": ".obsidian.md"}, {"color": "#ca9ee6", "id": ".mittakedaprogram.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".mittakedaprogram.mit.edu"}, {"color": "#ca9ee6", "id": ".adg.csail.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".adg.csail.mit.edu"}, {"color": "#ca9ee6", "id": ".genius.com", "label": "", "shape": "dot", "size": 1, "title": ".genius.com"}, {"color": "#ca9ee6", "id": ".marketplace.visualstudio.com", "label": "", "shape": "dot", "size": 1, "title": ".marketplace.visualstudio.com"}, {"color": "#ca9ee6", "id": ".dev.to", "label": "", "shape": "dot", "size": 1, "title": ".dev.to"}, {"color": "#ca9ee6", "id": ".joshcollinsworth.com", "label": "", "shape": "dot", "size": 1, "title": ".joshcollinsworth.com"}, {"color": "#ca9ee6", "id": ".learn.svelte.dev", "label": "", "shape": "dot", "size": 1, "title": ".learn.svelte.dev"}, {"color": "#ca9ee6", "id": ".kit.svelte.dev", "label": "", "shape": "dot", "size": 1, "title": ".kit.svelte.dev"}, {"color": "#b0afcc", "id": ".cemeterysummoning.github.io", "label": "", "shape": "dot", "size": 1, "title": ".cemeterysummoning.github.io"}, {"color": "#ca9ee6", "id": ".bryananthonio.com", "label": "", "shape": "dot", "size": 1, "title": ".bryananthonio.com"}, {"color": "#b0abd6", "id": ".website-v2-7qne7hx63-cemeterysummonings-projects.vercel.app", "label": "", "shape": "dot", "size": 2, "title": ".website-v2-7qne7hx63-cemeterysummonings-projects.vercel.app"}, {"color": "#aeaada", "id": ".svgrepo.com", "label": "", "shape": "dot", "size": 3, "title": ".svgrepo.com"}, {"color": "#ca9ee6", "id": ".codesandbox.io", "label": "", "shape": "dot", "size": 1, "title": ".codesandbox.io"}, {"color": "#ca9ee6", "id": ".shadcn-svelte.com", "label": "", "shape": "dot", "size": 1, "title": ".shadcn-svelte.com"}, {"color": "#ca9ee6", "id": ".vim.rtorr.com", "label": "", "shape": "dot", "size": 1, "title": ".vim.rtorr.com"}, {"color": "#ca9ee6", "id": ".builder.io", "label": "", "shape": "dot", "size": 1, "title": ".builder.io"}, {"color": "#ca9ee6", "id": ".website-v2-tau-gules.vercel.app", "label": "", "shape": "dot", "size": 3, "title": ".website-v2-tau-gules.vercel.app"}, {"color": "#ca9ee6", "id": ".ticketmaster.com", "label": "", "shape": "dot", "size": 1, "title": ".ticketmaster.com"}, {"color": "#ca9ee6", "id": ".superuser.com", "label": "", "shape": "dot", "size": 1, "title": ".superuser.com"}, {"color": "#ca9ee6", "id": ".sw.kovidgoyal.net", "label": "", "shape": "dot", "size": 1, "title": ".sw.kovidgoyal.net"}, {"color": "#ca9ee6", "id": ".maxwellrules.com", "label": "", "shape": "dot", "size": 1, "title": ".maxwellrules.com"}, {"color": "#8caaee", "id": ".windsurf.com", "label": "", "shape": "dot", "size": 1, "title": ".windsurf.com"}, {"color": "#ca9ee6", "id": ".codeium.com", "label": "", "shape": "dot", "size": 1, "title": ".codeium.com"}, {"color": "#ca9ee6", "id": ".apps.cirrusidentity.com", "label": "", "shape": "dot", "size": 1, "title": ".apps.cirrusidentity.com"}, {"color": "#b2a2e9", "id": ".fadata.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".fadata.mit.edu"}, {"color": "#b4a9d9", "id": ".eecs.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".eecs.mit.edu"}, {"color": "#b8a1e8", "id": ".notion.so", "label": "", "shape": "dot", "size": 2, "title": ".notion.so"}, {"color": "#ca9ee6", "id": ".notion.com", "label": "", "shape": "dot", "size": 1, "title": ".notion.com"}, {"color": "#ca9ee6", "id": ".researchgate.net", "label": "", "shape": "dot", "size": 1, "title": ".researchgate.net"}, {"color": "#ca9ee6", "id": ".topoi.net", "label": "", "shape": "dot", "size": 1, "title": ".topoi.net"}, {"color": "#ca9ee6", "id": ".dropbox.com", "label": "", "shape": "dot", "size": 1, "title": ".dropbox.com"}, {"color": "#ca9ee6", "id": ".polyinnovator.space", "label": "", "shape": "dot", "size": 1, "title": ".polyinnovator.space"}, {"color": "#ca9ee6", "id": ".fastmachinelearning.org", "label": "", "shape": "dot", "size": 1, "title": ".fastmachinelearning.org"}, {"color": "#bda0e7", "id": ".arxiv.org", "label": "", "shape": "dot", "size": 2, "title": ".arxiv.org"}, {"color": "#aba4ea", "id": ".careers.ibm.com", "label": "", "shape": "dot", "size": 1, "title": ".careers.ibm.com"}, {"color": "#ca9ee6", "id": ".qmunity.thequantuminsider.com", "label": "", "shape": "dot", "size": 1, "title": ".qmunity.thequantuminsider.com"}, {"color": "#ca9ee6", "id": ".ibm.com", "label": "", "shape": "dot", "size": 1, "title": ".ibm.com"}, {"color": "#ca9ee6", "id": ".programmes.polytechnique.edu", "label": "", "shape": "dot", "size": 1, "title": ".programmes.polytechnique.edu"}, {"color": "#ca9ee6", "id": ".ip-paris.fr", "label": "", "shape": "dot", "size": 1, "title": ".ip-paris.fr"}, {"color": "#ca9ee6", "id": ".tudelft.nl", "label": "", "shape": "dot", "size": 1, "title": ".tudelft.nl"}, {"color": "#b2a2e9", "id": ".journals.aps.org", "label": "", "shape": "dot", "size": 1, "title": ".journals.aps.org"}, {"color": "#ca9ee6", "id": ".link.aps.org", "label": "", "shape": "dot", "size": 1, "title": ".link.aps.org"}, {"color": "#8caaee", "id": ".wayfinder.openathens.net", "label": "", "shape": "dot", "size": 1, "title": ".wayfinder.openathens.net"}, {"color": "#ca9ee6", "id": ".architecture.mit.edu", "label": "", "shape": "dot", "size": 3, "title": ".architecture.mit.edu"}, {"color": "#ca9ee6", "id": ".sisapp.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".sisapp.mit.edu"}, {"color": "#ca9ee6", "id": ".mitadmissions.org", "label": "", "shape": "dot", "size": 1, "title": ".mitadmissions.org"}, {"color": "#ca9ee6", "id": ".lps.umd.edu", "label": "", "shape": "dot", "size": 1, "title": ".lps.umd.edu"}, {"color": "#ca9ee6", "id": ".megamitensei.fandom.com", "label": "", "shape": "dot", "size": 1, "title": ".megamitensei.fandom.com"}, {"color": "#ca9ee6", "id": ".moma.org", "label": "", "shape": "dot", "size": 1, "title": ".moma.org"}, {"color": "#b0c2a2", "id": ".websis.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".websis.mit.edu"}, {"color": "#ca9ee6", "id": ".registrar.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".registrar.mit.edu"}, {"color": "#b2a2e9", "id": ".misti.mit.edu", "label": "", "shape": "dot", "size": 4, "title": ".misti.mit.edu"}, {"color": "#ca9ee6", "id": ".matplotlib.org", "label": "", "shape": "dot", "size": 2, "title": ".matplotlib.org"}, {"color": "#ca9ee6", "id": ".bungostraydogs.fandom.com", "label": "", "shape": "dot", "size": 1, "title": ".bungostraydogs.fandom.com"}, {"color": "#aea3e9", "id": ".ocw.mit.edu", "label": "", "shape": "dot", "size": 4, "title": ".ocw.mit.edu"}, {"color": "#ca9ee6", "id": ".yaledailynews.com", "label": "", "shape": "dot", "size": 1, "title": ".yaledailynews.com"}, {"color": "#ca9ee6", "id": ".community.tiller.com", "label": "", "shape": "dot", "size": 1, "title": ".community.tiller.com"}, {"color": "#c1a9d1", "id": ".secure.chase.com", "label": "", "shape": "dot", "size": 1, "title": ".secure.chase.com"}, {"color": "#8caaee", "id": ".account.chase.com", "label": "", "shape": "dot", "size": 1, "title": ".account.chase.com"}, {"color": "#ca9ee6", "id": ".usa.experian.com", "label": "", "shape": "dot", "size": 3, "title": ".usa.experian.com"}, {"color": "#ca9ee6", "id": ".experian.com", "label": "", "shape": "dot", "size": 1, "title": ".experian.com"}, {"color": "#aba4ea", "id": ".mastercard.com", "label": "", "shape": "dot", "size": 1, "title": ".mastercard.com"}, {"color": "#ca9ee6", "id": ".mastercard.us", "label": "", "shape": "dot", "size": 1, "title": ".mastercard.us"}, {"color": "#aaadd5", "id": ".sofi.com", "label": "", "shape": "dot", "size": 4, "title": ".sofi.com"}, {"color": "#ca9ee6", "id": ".nerdwallet.com", "label": "", "shape": "dot", "size": 1, "title": ".nerdwallet.com"}, {"color": "#ca9ee6", "id": ".acephale.info", "label": "", "shape": "dot", "size": 2, "title": ".acephale.info"}, {"color": "#ca9ee6", "id": ".nosubject.com", "label": "", "shape": "dot", "size": 2, "title": ".nosubject.com"}, {"color": "#ca9ee6", "id": ".cpb-us-e1.wpmucdn.com", "label": "", "shape": "dot", "size": 1, "title": ".cpb-us-e1.wpmucdn.com"}, {"color": "#b4a2e8", "id": ".etsy.com", "label": "", "shape": "dot", "size": 4, "title": ".etsy.com"}, {"color": "#ca9ee6", "id": ".acidhorizonpodcast.com", "label": "", "shape": "dot", "size": 1, "title": ".acidhorizonpodcast.com"}, {"color": "#ada3e9", "id": ".contagionpress.com", "label": "", "shape": "dot", "size": 2, "title": ".contagionpress.com"}, {"color": "#b7b0c7", "id": ".youtube.com", "label": "", "shape": "dot", "size": 5, "title": ".youtube.com"}, {"color": "#aba4ea", "id": ".youtu.be", "label": "", "shape": "dot", "size": 1, "title": ".youtu.be"}, {"color": "#ca9ee6", "id": ".mission17.org", "label": "", "shape": "dot", "size": 1, "title": ".mission17.org"}, {"color": "#b2a2e9", "id": ".bpb-us-e1.wpmucdn.com", "label": "", "shape": "dot", "size": 1, "title": ".bpb-us-e1.wpmucdn.com"}, {"color": "#ca9ee6", "id": ".boundarylanguage.psu.edu", "label": "", "shape": "dot", "size": 1, "title": ".boundarylanguage.psu.edu"}, {"color": "#ca9ee6", "id": ".ipsa.psu.edu", "label": "", "shape": "dot", "size": 1, "title": ".ipsa.psu.edu"}, {"color": "#ca9ee6", "id": ".calendar.notion.so", "label": "", "shape": "dot", "size": 5, "title": ".calendar.notion.so"}, {"color": "#8caaee", "id": ".marketplace.zoom.us", "label": "", "shape": "dot", "size": 1, "title": ".marketplace.zoom.us"}, {"color": "#8caaee", "id": ".openstax.org", "label": "", "shape": "dot", "size": 1, "title": ".openstax.org"}, {"color": "#8caaee", "id": ".kinetic.openstax.org", "label": "", "shape": "dot", "size": 1, "title": ".kinetic.openstax.org"}, {"color": "#a1b4cb", "id": ".cvat.ai", "label": "", "shape": "dot", "size": 2, "title": ".cvat.ai"}, {"color": "#ca9ee6", "id": ".docs.cvat.ai", "label": "", "shape": "dot", "size": 1, "title": ".docs.cvat.ai"}, {"color": "#ca9ee6", "id": ".crummy.com", "label": "", "shape": "dot", "size": 1, "title": ".crummy.com"}, {"color": "#ca9ee6", "id": ".pypi.org", "label": "", "shape": "dot", "size": 1, "title": ".pypi.org"}, {"color": "#8caaee", "id": ".teddykw2.wordpress.com", "label": "", "shape": "dot", "size": 1, "title": ".teddykw2.wordpress.com"}, {"color": "#ca9ee6", "id": ".teddykw2.files.wordpress.com", "label": "", "shape": "dot", "size": 1, "title": ".teddykw2.files.wordpress.com"}, {"color": "#a7a4ea", "id": ".solidaritycinema.com", "label": "", "shape": "dot", "size": 2, "title": ".solidaritycinema.com"}, {"color": "#b4abd3", "id": ".putz.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".putz.mit.edu"}, {"color": "#ca9ee6", "id": ".blog.archive.org", "label": "", "shape": "dot", "size": 2, "title": ".blog.archive.org"}, {"color": "#a8aed4", "id": ".eecsla.mit.edu", "label": "", "shape": "dot", "size": 4, "title": ".eecsla.mit.edu"}, {"color": "#8caaee", "id": ".wayf.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".wayf.mit.edu"}, {"color": "#aba4ea", "id": ".py.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".py.mit.edu"}, {"color": "#bba0e7", "id": ".brand.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".brand.mit.edu"}, {"color": "#ca9ee6", "id": ".scipost.org", "label": "", "shape": "dot", "size": 1, "title": ".scipost.org"}, {"color": "#aba4ea", "id": ".onr.navy.mil", "label": "", "shape": "dot", "size": 1, "title": ".onr.navy.mil"}, {"color": "#ca9ee6", "id": ".research.illinois.edu", "label": "", "shape": "dot", "size": 1, "title": ".research.illinois.edu"}, {"color": "#ca9ee6", "id": ".pubs.aip.org", "label": "", "shape": "dot", "size": 1, "title": ".pubs.aip.org"}, {"color": "#ca9ee6", "id": ".colorado.edu", "label": "", "shape": "dot", "size": 1, "title": ".colorado.edu"}, {"color": "#ca9ee6", "id": ".cqe.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".cqe.mit.edu"}, {"color": "#acaad9", "id": ".amazon.com", "label": "", "shape": "dot", "size": 7, "title": ".amazon.com"}, {"color": "#a6d189", "id": ".a.co", "label": "", "shape": "dot", "size": 1, "title": ".a.co"}, {"color": "#a3a5ea", "id": ".docs.github.com", "label": "", "shape": "dot", "size": 1, "title": ".docs.github.com"}, {"color": "#b4afca", "id": ".tumblr.com", "label": "", "shape": "dot", "size": 12, "title": ".tumblr.com"}, {"color": "#ca9ee6", "id": ".dxsxdxrium.tumblr.com", "label": "", "shape": "dot", "size": 1, "title": ".dxsxdxrium.tumblr.com"}, {"color": "#ca9ee6", "id": ".mgregersen.dk", "label": "", "shape": "dot", "size": 1, "title": ".mgregersen.dk"}, {"color": "#aba4ea", "id": ".gwu.edu", "label": "", "shape": "dot", "size": 1, "title": ".gwu.edu"}, {"color": "#b9a1e8", "id": ".cppmadmin.it.gwu.edu", "label": "", "shape": "dot", "size": 2, "title": ".cppmadmin.it.gwu.edu"}, {"color": "#ca9ee6", "id": ".tutorialspoint.com", "label": "", "shape": "dot", "size": 1, "title": ".tutorialspoint.com"}, {"color": "#ca9ee6", "id": ".caniuse.com", "label": "", "shape": "dot", "size": 1, "title": ".caniuse.com"}, {"color": "#8caaee", "id": ".s181.convertio.me", "label": "", "shape": "dot", "size": 1, "title": ".s181.convertio.me"}, {"color": "#ca9ee6", "id": ".convertio.co", "label": "", "shape": "dot", "size": 1, "title": ".convertio.co"}, {"color": "#b1a2e9", "id": ".last.fm", "label": "", "shape": "dot", "size": 3, "title": ".last.fm"}, {"color": "#ca9ee6", "id": ".mbhsmagnet.org", "label": "", "shape": "dot", "size": 1, "title": ".mbhsmagnet.org"}, {"color": "#ca9ee6", "id": ".steelcitycodes.org", "label": "", "shape": "dot", "size": 1, "title": ".steelcitycodes.org"}, {"color": "#ca9ee6", "id": ".ccrl.umd.edu", "label": "", "shape": "dot", "size": 1, "title": ".ccrl.umd.edu"}, {"color": "#ca9ee6", "id": ".beaverworks.ll.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".beaverworks.ll.mit.edu"}, {"color": "#ca9ee6", "id": ".futuretech.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".futuretech.mit.edu"}, {"color": "#b1a9da", "id": ".nist.gov", "label": "", "shape": "dot", "size": 2, "title": ".nist.gov"}, {"color": "#ca9ee6", "id": ".random-ize.com", "label": "", "shape": "dot", "size": 1, "title": ".random-ize.com"}, {"color": "#ca9ee6", "id": ".smarthistory.org", "label": "", "shape": "dot", "size": 1, "title": ".smarthistory.org"}, {"color": "#ca9ee6", "id": ".sts-program.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".sts-program.mit.edu"}, {"color": "#a9b3c9", "id": ".mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".mit.edu"}, {"color": "#b2a2e9", "id": ".cran.r-project.org", "label": "", "shape": "dot", "size": 1, "title": ".cran.r-project.org"}, {"color": "#b5a2e8", "id": ".alpha.nist.gov", "label": "", "shape": "dot", "size": 1, "title": ".alpha.nist.gov"}, {"color": "#ca9ee6", "id": ".v1.tailwindcss.com", "label": "", "shape": "dot", "size": 1, "title": ".v1.tailwindcss.com"}, {"color": "#ca9ee6", "id": ".forum.freecodecamp.org", "label": "", "shape": "dot", "size": 1, "title": ".forum.freecodecamp.org"}, {"color": "#a9b3c9", "id": ".w3.org", "label": "", "shape": "dot", "size": 1, "title": ".w3.org"}, {"color": "#ca9ee6", "id": ".flowbite.com", "label": "", "shape": "dot", "size": 1, "title": ".flowbite.com"}, {"color": "#ca9ee6", "id": ".tiktok.com", "label": "", "shape": "dot", "size": 1, "title": ".tiktok.com"}, {"color": "#b8a6dd", "id": ".figma.com", "label": "", "shape": "dot", "size": 7, "title": ".figma.com"}, {"color": "#ca9ee6", "id": ".fonts.google.com", "label": "", "shape": "dot", "size": 2, "title": ".fonts.google.com"}, {"color": "#ca9ee6", "id": ".tracyssewingstudio.com", "label": "", "shape": "dot", "size": 1, "title": ".tracyssewingstudio.com"}, {"color": "#ca9ee6", "id": ".wikihow.com", "label": "", "shape": "dot", "size": 1, "title": ".wikihow.com"}, {"color": "#b2a2e9", "id": ".linktr.ee", "label": "", "shape": "dot", "size": 1, "title": ".linktr.ee"}, {"color": "#ca9ee6", "id": ".l.instagram.com", "label": "", "shape": "dot", "size": 1, "title": ".l.instagram.com"}, {"color": "#8caaee", "id": ".vscode.download.prss.microsoft.com", "label": "", "shape": "dot", "size": 1, "title": ".vscode.download.prss.microsoft.com"}, {"color": "#ca9ee6", "id": ".code.visualstudio.com", "label": "", "shape": "dot", "size": 2, "title": ".code.visualstudio.com"}, {"color": "#ca9ee6", "id": ".nodejs.org", "label": "", "shape": "dot", "size": 1, "title": ".nodejs.org"}, {"color": "#ca9ee6", "id": ".docs.astro.build", "label": "", "shape": "dot", "size": 1, "title": ".docs.astro.build"}, {"color": "#afa3e9", "id": ".johnnydecimal.com", "label": "", "shape": "dot", "size": 4, "title": ".johnnydecimal.com"}, {"color": "#aba4ea", "id": ".willhath.com", "label": "", "shape": "dot", "size": 1, "title": ".willhath.com"}, {"color": "#ca9ee6", "id": ".mit.us22.list-manage.com", "label": "", "shape": "dot", "size": 1, "title": ".mit.us22.list-manage.com"}, {"color": "#baa1e8", "id": ".mitguidetoresidences.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".mitguidetoresidences.mit.edu"}, {"color": "#ca9ee6", "id": ".studentlife.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".studentlife.mit.edu"}, {"color": "#aba3e9", "id": ".app.zoom.us", "label": "", "shape": "dot", "size": 3, "title": ".app.zoom.us"}, {"color": "#afa8de", "id": ".umd.zoom.us", "label": "", "shape": "dot", "size": 4, "title": ".umd.zoom.us"}, {"color": "#c1a9d0", "id": ".idss.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".idss.mit.edu"}, {"color": "#aba4ea", "id": ".catalog.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".catalog.mit.edu"}, {"color": "#b3abd5", "id": ".elx.mit.edu", "label": "", "shape": "dot", "size": 2, "title": ".elx.mit.edu"}, {"color": "#ca9ee6", "id": ".latex2image.joeraut.com", "label": "", "shape": "dot", "size": 1, "title": ".latex2image.joeraut.com"}, {"color": "#aba4ea", "id": ".stopkosa.com", "label": "", "shape": "dot", "size": 1, "title": ".stopkosa.com"}, {"color": "#ca9ee6", "id": ".xmortis.com", "label": "", "shape": "dot", "size": 1, "title": ".xmortis.com"}, {"color": "#ca9ee6", "id": ".astroship.web3templates.com", "label": "", "shape": "dot", "size": 1, "title": ".astroship.web3templates.com"}, {"color": "#ca9ee6", "id": ".stackblitz.com", "label": "", "shape": "dot", "size": 1, "title": ".stackblitz.com"}, {"color": "#ca9ee6", "id": ".nngroup.com", "label": "", "shape": "dot", "size": 1, "title": ".nngroup.com"}, {"color": "#ca9ee6", "id": ".forum.squarespace.com", "label": "", "shape": "dot", "size": 1, "title": ".forum.squarespace.com"}, {"color": "#b3a2e8", "id": ".flickr.com", "label": "", "shape": "dot", "size": 3, "title": ".flickr.com"}, {"color": "#bca0e7", "id": ".ladyada.net", "label": "", "shape": "dot", "size": 3, "title": ".ladyada.net"}, {"color": "#aba4ea", "id": ".adafruit.com", "label": "", "shape": "dot", "size": 1, "title": ".adafruit.com"}, {"color": "#ca9ee6", "id": ".mitpress.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".mitpress.mit.edu"}, {"color": "#ca9ee6", "id": ".make.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".make.mit.edu"}, {"color": "#ca9ee6", "id": ".project-manus.libcal.com", "label": "", "shape": "dot", "size": 1, "title": ".project-manus.libcal.com"}, {"color": "#ca9ee6", "id": ".when2meet.com", "label": "", "shape": "dot", "size": 1, "title": ".when2meet.com"}, {"color": "#8caaee", "id": ".pimeyes.com", "label": "", "shape": "dot", "size": 1, "title": ".pimeyes.com"}, {"color": "#8caaee", "id": ".facecheck.id", "label": "", "shape": "dot", "size": 1, "title": ".facecheck.id"}, {"color": "#ca9ee6", "id": ".nikola.fluidinterfaces.com", "label": "", "shape": "dot", "size": 1, "title": ".nikola.fluidinterfaces.com"}, {"color": "#aba4ea", "id": ".getbootstrap.com", "label": "", "shape": "dot", "size": 1, "title": ".getbootstrap.com"}, {"color": "#ca9ee6", "id": ".discourse.gohugo.io", "label": "", "shape": "dot", "size": 1, "title": ".discourse.gohugo.io"}, {"color": "#aba4ea", "id": ".netlify.com", "label": "", "shape": "dot", "size": 1, "title": ".netlify.com"}, {"color": "#ca9ee6", "id": ".my.clevelandclinic.org", "label": "", "shape": "dot", "size": 1, "title": ".my.clevelandclinic.org"}, {"color": "#8caaee", "id": ".americanexpress.com", "label": "", "shape": "dot", "size": 1, "title": ".americanexpress.com"}, {"color": "#ca9ee6", "id": ".goto.americanexpress.com", "label": "", "shape": "dot", "size": 1, "title": ".goto.americanexpress.com"}, {"color": "#ca9ee6", "id": ".urop.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".urop.mit.edu"}, {"color": "#ca9ee6", "id": ".mit.studentemployment.ngwebsolutions.com", "label": "", "shape": "dot", "size": 1, "title": ".mit.studentemployment.ngwebsolutions.com"}, {"color": "#ca9ee6", "id": ".mailman.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".mailman.mit.edu"}, {"color": "#8caaee", "id": ".zoom.com", "label": "", "shape": "dot", "size": 1, "title": ".zoom.com"}, {"color": "#a8acd8", "id": ".zoom.us", "label": "", "shape": "dot", "size": 1, "title": ".zoom.us"}, {"color": "#b5a2e8", "id": ".support.zoom.com", "label": "", "shape": "dot", "size": 1, "title": ".support.zoom.com"}, {"color": "#ca9ee6", "id": ".introml.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".introml.mit.edu"}, {"color": "#aba4ea", "id": ".sigmaaldrich.com", "label": "", "shape": "dot", "size": 1, "title": ".sigmaaldrich.com"}, {"color": "#b2a2e9", "id": ".themoviedb.org", "label": "", "shape": "dot", "size": 1, "title": ".themoviedb.org"}, {"color": "#ca9ee6", "id": ".eriksson.physics.wisc.edu", "label": "", "shape": "dot", "size": 1, "title": ".eriksson.physics.wisc.edu"}, {"color": "#ca9ee6", "id": ".physics.wisc.edu", "label": "", "shape": "dot", "size": 1, "title": ".physics.wisc.edu"}, {"color": "#ca9ee6", "id": ".baeldung.com", "label": "", "shape": "dot", "size": 1, "title": ".baeldung.com"}, {"color": "#ca9ee6", "id": ".science.smith.edu", "label": "", "shape": "dot", "size": 1, "title": ".science.smith.edu"}, {"color": "#b2add1", "id": ".courseroad.mit.edu", "label": "", "shape": "dot", "size": 4, "title": ".courseroad.mit.edu"}, {"color": "#ca9ee6", "id": ".people.csail.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".people.csail.mit.edu"}, {"color": "#ca9ee6", "id": ".uvm.edu", "label": "", "shape": "dot", "size": 1, "title": ".uvm.edu"}, {"color": "#ca9ee6", "id": ".dokumen.pub", "label": "", "shape": "dot", "size": 1, "title": ".dokumen.pub"}, {"color": "#ca9ee6", "id": ".oa.mg", "label": "", "shape": "dot", "size": 1, "title": ".oa.mg"}, {"color": "#b7a1e8", "id": ".stats.stackexchange.com", "label": "", "shape": "dot", "size": 1, "title": ".stats.stackexchange.com"}, {"color": "#aba4ea", "id": ".mediaperipheries.otago.ac.nz", "label": "", "shape": "dot", "size": 1, "title": ".mediaperipheries.otago.ac.nz"}, {"color": "#9ea6eb", "id": ".othervoices.org", "label": "", "shape": "dot", "size": 2, "title": ".othervoices.org"}, {"color": "#ca9ee6", "id": ".tandfonline.com", "label": "", "shape": "dot", "size": 1, "title": ".tandfonline.com"}, {"color": "#ca9ee6", "id": ".songsterr.com", "label": "", "shape": "dot", "size": 1, "title": ".songsterr.com"}, {"color": "#ca9ee6", "id": ".woodsholefilmfestival.org", "label": "", "shape": "dot", "size": 3, "title": ".woodsholefilmfestival.org"}, {"color": "#ca9ee6", "id": ".talamas.com", "label": "", "shape": "dot", "size": 1, "title": ".talamas.com"}, {"color": "#ca9ee6", "id": ".woods-hole-film-festival.square.site", "label": "", "shape": "dot", "size": 1, "title": ".woods-hole-film-festival.square.site"}, {"color": "#ca9ee6", "id": ".quantumcomputing.stackexchange.com", "label": "", "shape": "dot", "size": 1, "title": ".quantumcomputing.stackexchange.com"}, {"color": "#ca9ee6", "id": ".inspirehep.net", "label": "", "shape": "dot", "size": 1, "title": ".inspirehep.net"}, {"color": "#ca9ee6", "id": ".scholar.google.com", "label": "", "shape": "dot", "size": 1, "title": ".scholar.google.com"}, {"color": "#ca9ee6", "id": ".medlinks.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".medlinks.mit.edu"}, {"color": "#a4b5c5", "id": ".chase.com", "label": "", "shape": "dot", "size": 1, "title": ".chase.com"}, {"color": "#ca9ee6", "id": ".dolanuyghur.com", "label": "", "shape": "dot", "size": 1, "title": ".dolanuyghur.com"}, {"color": "#ca9ee6", "id": ".i.sstatic.net", "label": "", "shape": "dot", "size": 1, "title": ".i.sstatic.net"}, {"color": "#ca9ee6", "id": ".gis.stackexchange.com", "label": "", "shape": "dot", "size": 1, "title": ".gis.stackexchange.com"}, {"color": "#ca9ee6", "id": ".numpy.org", "label": "", "shape": "dot", "size": 1, "title": ".numpy.org"}, {"color": "#ca9ee6", "id": ".futurelearn.com", "label": "", "shape": "dot", "size": 1, "title": ".futurelearn.com"}, {"color": "#ca9ee6", "id": ".starrez.com", "label": "", "shape": "dot", "size": 1, "title": ".starrez.com"}, {"color": "#beafc7", "id": ".geogebra.org", "label": "", "shape": "dot", "size": 1, "title": ".geogebra.org"}, {"color": "#b8b7b7", "id": ".desmos.com", "label": "", "shape": "dot", "size": 1, "title": ".desmos.com"}, {"color": "#ca9ee6", "id": ".labelme.io", "label": "", "shape": "dot", "size": 1, "title": ".labelme.io"}, {"color": "#ca9ee6", "id": ".elilifland.com", "label": "", "shape": "dot", "size": 1, "title": ".elilifland.com"}, {"color": "#ca9ee6", "id": ".philosophy.stackexchange.com", "label": "", "shape": "dot", "size": 1, "title": ".philosophy.stackexchange.com"}, {"color": "#ca9ee6", "id": ".physics.stackexchange.com", "label": "", "shape": "dot", "size": 1, "title": ".physics.stackexchange.com"}, {"color": "#ca9ee6", "id": ".qudev.phys.ethz.ch", "label": "", "shape": "dot", "size": 1, "title": ".qudev.phys.ethz.ch"}, {"color": "#ca9ee6", "id": ".diy.stackexchange.com", "label": "", "shape": "dot", "size": 1, "title": ".diy.stackexchange.com"}, {"color": "#a7a4ea", "id": ".silver.afi.com", "label": "", "shape": "dot", "size": 2, "title": ".silver.afi.com"}, {"color": "#a6d189", "id": ".afisilver.afi.com", "label": "", "shape": "dot", "size": 1, "title": ".afisilver.afi.com"}, {"color": "#ca9ee6", "id": ".imdb.com", "label": "", "shape": "dot", "size": 1, "title": ".imdb.com"}, {"color": "#ca9ee6", "id": ".megacityreview.org", "label": "", "shape": "dot", "size": 1, "title": ".megacityreview.org"}, {"color": "#ca9ee6", "id": ".imgflip.com", "label": "", "shape": "dot", "size": 1, "title": ".imgflip.com"}, {"color": "#ca9ee6", "id": ".lacan.com", "label": "", "shape": "dot", "size": 1, "title": ".lacan.com"}, {"color": "#b5a2e8", "id": ".redactle.net", "label": "", "shape": "dot", "size": 1, "title": ".redactle.net"}, {"color": "#ca9ee6", "id": ".redactle-unlimited.com", "label": "", "shape": "dot", "size": 1, "title": ".redactle-unlimited.com"}, {"color": "#ca9ee6", "id": ".redactle.anybrowser.org", "label": "", "shape": "dot", "size": 1, "title": ".redactle.anybrowser.org"}, {"color": "#ca9ee6", "id": ".quora.com", "label": "", "shape": "dot", "size": 1, "title": ".quora.com"}, {"color": "#aba4ea", "id": ".xenopraxis.net", "label": "", "shape": "dot", "size": 1, "title": ".xenopraxis.net"}, {"color": "#ca9ee6", "id": ".monoskop.org", "label": "", "shape": "dot", "size": 1, "title": ".monoskop.org"}, {"color": "#ca9ee6", "id": ".marcuse.org", "label": "", "shape": "dot", "size": 1, "title": ".marcuse.org"}, {"color": "#ca9ee6", "id": ".lunaimaging.com", "label": "", "shape": "dot", "size": 1, "title": ".lunaimaging.com"}, {"color": "#a3a5ea", "id": ".help.archive.org", "label": "", "shape": "dot", "size": 1, "title": ".help.archive.org"}, {"color": "#ca9ee6", "id": ".blog.rayberger.org", "label": "", "shape": "dot", "size": 1, "title": ".blog.rayberger.org"}, {"color": "#aba4ea", "id": ".rayberger.org", "label": "", "shape": "dot", "size": 1, "title": ".rayberger.org"}, {"color": "#ca9ee6", "id": ".contribute.cncf.io", "label": "", "shape": "dot", "size": 1, "title": ".contribute.cncf.io"}, {"color": "#ca9ee6", "id": ".open.spotify.com", "label": "", "shape": "dot", "size": 1, "title": ".open.spotify.com"}, {"color": "#ca9ee6", "id": ".nerdfighteria.info", "label": "", "shape": "dot", "size": 1, "title": ".nerdfighteria.info"}, {"color": "#ca9ee6", "id": ".yesstyle.com", "label": "", "shape": "dot", "size": 1, "title": ".yesstyle.com"}, {"color": "#ca9ee6", "id": ".melanocc.com.my", "label": "", "shape": "dot", "size": 1, "title": ".melanocc.com.my"}, {"color": "#ca9ee6", "id": ".japanesetaste.com", "label": "", "shape": "dot", "size": 1, "title": ".japanesetaste.com"}, {"color": "#ca9ee6", "id": ".dbknews.com", "label": "", "shape": "dot", "size": 1, "title": ".dbknews.com"}, {"color": "#8caaee", "id": ".uwprod-my.sharepoint.com", "label": "", "shape": "dot", "size": 1, "title": ".uwprod-my.sharepoint.com"}, {"color": "#ca9ee6", "id": ".carlkho-cvk.medium.com", "label": "", "shape": "dot", "size": 1, "title": ".carlkho-cvk.medium.com"}, {"color": "#ca9ee6", "id": ".t-mobile.com", "label": "", "shape": "dot", "size": 3, "title": ".t-mobile.com"}, {"color": "#ca9ee6", "id": ".highonfilms.com", "label": "", "shape": "dot", "size": 1, "title": ".highonfilms.com"}, {"color": "#ca9ee6", "id": ".origami-art.us", "label": "", "shape": "dot", "size": 1, "title": ".origami-art.us"}, {"color": "#ca9ee6", "id": ".homepages.inf.ed.ac.uk", "label": "", "shape": "dot", "size": 1, "title": ".homepages.inf.ed.ac.uk"}, {"color": "#b2a2e9", "id": ".students.care26.com", "label": "", "shape": "dot", "size": 2, "title": ".students.care26.com"}, {"color": "#ca9ee6", "id": ".auth.care26.com", "label": "", "shape": "dot", "size": 1, "title": ".auth.care26.com"}, {"color": "#8caaee", "id": ".email1.ahpcare.com", "label": "", "shape": "dot", "size": 1, "title": ".email1.ahpcare.com"}, {"color": "#aba4ea", "id": ".email.ahpcare.com", "label": "", "shape": "dot", "size": 1, "title": ".email.ahpcare.com"}, {"color": "#ca9ee6", "id": ".math.purdue.edu", "label": "", "shape": "dot", "size": 1, "title": ".math.purdue.edu"}, {"color": "#ca9ee6", "id": ".alamo.edu", "label": "", "shape": "dot", "size": 1, "title": ".alamo.edu"}, {"color": "#ca9ee6", "id": ".education.launchcode.org", "label": "", "shape": "dot", "size": 1, "title": ".education.launchcode.org"}, {"color": "#b2a2e9", "id": ".packaging.python.org", "label": "", "shape": "dot", "size": 1, "title": ".packaging.python.org"}, {"color": "#ca9ee6", "id": ".docs.python.org", "label": "", "shape": "dot", "size": 1, "title": ".docs.python.org"}, {"color": "#ca9ee6", "id": ".discourse.matplotlib.org", "label": "", "shape": "dot", "size": 2, "title": ".discourse.matplotlib.org"}, {"color": "#ca9ee6", "id": ".opencv.org", "label": "", "shape": "dot", "size": 1, "title": ".opencv.org"}, {"color": "#ca9ee6", "id": ".analyticsvidhya.com", "label": "", "shape": "dot", "size": 1, "title": ".analyticsvidhya.com"}, {"color": "#ca9ee6", "id": ".qce.quantum.ieee.org", "label": "", "shape": "dot", "size": 2, "title": ".qce.quantum.ieee.org"}, {"color": "#aba4ea", "id": ".weeavemagazine.com", "label": "", "shape": "dot", "size": 1, "title": ".weeavemagazine.com"}, {"color": "#bfadca", "id": ".instagram.com", "label": "", "shape": "dot", "size": 11, "title": ".instagram.com"}, {"color": "#ca9ee6", "id": ".veganiac.com", "label": "", "shape": "dot", "size": 1, "title": ".veganiac.com"}, {"color": "#ca9ee6", "id": ".act.mit.edu", "label": "", "shape": "dot", "size": 1, "title": ".act.mit.edu"}, {"color": "#ca9ee6", "id": ".discuss.pytorch.org", "label": "", "shape": "dot", "size": 2, "title": ".discuss.pytorch.org"}, {"color": "#ca9ee6", "id": ".linkedin.com", "label": "", "shape": "dot", "size": 1, "title": ".linkedin.com"}, {"color": "#ca9ee6", "id": ".tuatini.me", "label": "", "shape": "dot", "size": 1, "title": ".tuatini.me"}, {"color": "#ca9ee6", "id": ".qupath.readthedocs.io", "label": "", "shape": "dot", "size": 1, "title": ".qupath.readthedocs.io"}, {"color": "#ca9ee6", "id": ".iagsdc.org", "label": "", "shape": "dot", "size": 1, "title": ".iagsdc.org"}, {"color": "#ca9ee6", "id": ".spirit.com", "label": "", "shape": "dot", "size": 1, "title": ".spirit.com"}, {"color": "#b7aad5", "id": ".orcid.org", "label": "", "shape": "dot", "size": 2, "title": ".orcid.org"}, {"color": "#b5a2e8", "id": ".nkimillustrate.weebly.com", "label": "", "shape": "dot", "size": 1, "title": ".nkimillustrate.weebly.com"}, {"color": "#aba4ea", "id": ".nkim-illustrates.tumblr.com", "label": "", "shape": "dot", "size": 1, "title": ".nkim-illustrates.tumblr.com"}, {"color": "#ca9ee6", "id": ".somervilletheatre.com", "label": "", "shape": "dot", "size": 1, "title": ".somervilletheatre.com"}, {"color": "#99bdbb", "id": ".screenboston.com", "label": "", "shape": "dot", "size": 1, "title": ".screenboston.com"}, {"color": "#ca9ee6", "id": ".urbanomic.com", "label": "", "shape": "dot", "size": 1, "title": ".urbanomic.com"}, {"color": "#ca9ee6", "id": ".antithesi.gr", "label": "", "shape": "dot", "size": 1, "title": ".antithesi.gr"}, {"color": "#ca9ee6", "id": ".blacksmithgu.github.io", "label": "", "shape": "dot", "size": 1, "title": ".blacksmithgu.github.io"}, {"color": "#aba4ea", "id": ".viagogo.com", "label": "", "shape": "dot", "size": 1, "title": ".viagogo.com"}, {"color": "#ca9ee6", "id": ".wanderu.com", "label": "", "shape": "dot", "size": 1, "title": ".wanderu.com"}, {"color": "#ca9ee6", "id": ".eventbrite.com", "label": "", "shape": "dot", "size": 1, "title": ".eventbrite.com"}, {"color": "#c2a8d2", "id": ".", "label": "", "shape": "dot", "size": 1.0, "title": "."}, {"color": "#ca9ee6", "id": ".facelessuser.github.io", "label": "", "shape": "dot", "size": 1.0, "title": ".facelessuser.github.io"}, {"color": "#afacd5", "id": ".entroplay.world", "label": "", "shape": "dot", "size": 3.8729833462074166, "title": ".entroplay.world"}, {"color": "#a6d189", "id": ".ab-intio.mit.edu", "label": "", "shape": "dot", "size": 1.0, "title": ".ab-intio.mit.edu"}, {"color": "#ca9ee6", "id": ".news.ycombinator.com", "label": "", "shape": "dot", "size": 1.0, "title": ".news.ycombinator.com"}, {"color": "#afafce", "id": ".alexlenail.me", "label": "", "shape": "dot", "size": 2.6457513110645903, "title": ".alexlenail.me"}, {"color": "#ca9ee6", "id": ".gnome.pages.gitlab.gnome.org", "label": "", "shape": "dot", "size": 1.0, "title": ".gnome.pages.gitlab.gnome.org"}, {"color": "#b9a8d7", "id": ".sookkyungart.com", "label": "", "shape": "dot", "size": 4.0, "title": ".sookkyungart.com"}, {"color": "#a6d189", "id": ".viz.com", "label": "", "shape": "dot", "size": 1.0, "title": ".viz.com"}, {"color": "#a6d189", "id": ".doc.csod.com", "label": "", "shape": "dot", "size": 1.0, "title": ".doc.csod.com"}, {"color": "#a6d189", "id": ".cs.unc.edu", "label": "", "shape": "dot", "size": 1.0, "title": ".cs.unc.edu"}, {"color": "#a6d189", "id": ".asr.github.io", "label": "", "shape": "dot", "size": 1.0, "title": ".asr.github.io"}, {"color": "#a6d189", "id": ".clickylist.com", "label": "", "shape": "dot", "size": 1.0, "title": ".clickylist.com"}, {"color": "#a6d189", "id": ".simpleanalytics.com", "label": "", "shape": "dot", "size": 1.0, "title": ".simpleanalytics.com"}, {"color": "#a6d189", "id": ".debracollege.dspaces.org", "label": "", "shape": "dot", "size": 1.0, "title": ".debracollege.dspaces.org"}, {"color": "#a6d189", "id": ".slingacademy.com", "label": "", "shape": "dot", "size": 1.0, "title": ".slingacademy.com"}, {"color": "#a6d189", "id": ".engage.mit.edu", "label": "", "shape": "dot", "size": 1.0, "title": ".engage.mit.edu"}, {"color": "#ca9ee6", "id": ".webextension.org", "label": "", "shape": "dot", "size": 1.0, "title": ".webextension.org"}, {"color": "#aba4ea", "id": ".addons.mozilla.org", "label": "", "shape": "dot", "size": 1.7320508075688774, "title": ".addons.mozilla.org"}, {"color": "#bcb1c2", "id": ".movies.mit.edu", "label": "", "shape": "dot", "size": 1.0, "title": ".movies.mit.edu"}, {"color": "#a6d189", "id": ".nerdfonts.com", "label": "", "shape": "dot", "size": 1.0, "title": ".nerdfonts.com"}, {"color": "#ca9ee6", "id": ".flowbite-svelte.com", "label": "", "shape": "dot", "size": 1.0, "title": ".flowbite-svelte.com"}, {"color": "#ca9ee6", "id": ".learncpp.com", "label": "", "shape": "dot", "size": 5.196152422706632, "title": ".learncpp.com"}, {"color": "#8caaee", "id": ".app.bold.org", "label": "", "shape": "dot", "size": 1.0, "title": ".app.bold.org"}, {"color": "#a6d189", "id": ".leoyablans.medium.com", "label": "", "shape": "dot", "size": 1.0, "title": ".leoyablans.medium.com"}, {"color": "#ca9ee6", "id": ".theanarchistlibrary.org", "label": "", "shape": "dot", "size": 1.0, "title": ".theanarchistlibrary.org"}, {"color": "#a6d189", "id": ".eroseffect.com", "label": "", "shape": "dot", "size": 1.0, "title": ".eroseffect.com"}, {"color": "#ca9ee6", "id": ".theoccupiedtimes.org", "label": "", "shape": "dot", "size": 1.0, "title": ".theoccupiedtimes.org"}, {"color": "#ca9ee6", "id": ".ethicalpolitics.org", "label": "", "shape": "dot", "size": 1.0, "title": ".ethicalpolitics.org"}, {"color": "#8caaee", "id": ".tate.org.uk", "label": "", "shape": "dot", "size": 1.0, "title": ".tate.org.uk"}, {"color": "#a9a4ea", "id": ".secure.touchnet.net", "label": "", "shape": "dot", "size": 4.47213595499958, "title": ".secure.touchnet.net"}, {"color": "#8caaee", "id": ".famouspictures.org", "label": "", "shape": "dot", "size": 1.0, "title": ".famouspictures.org"}, {"color": "#ca9ee6", "id": ".thetech.com", "label": "", "shape": "dot", "size": 1.0, "title": ".thetech.com"}, {"color": "#beafc7", "id": ".downforacross.com", "label": "", "shape": "dot", "size": 3.6055512754639896, "title": ".downforacross.com"}, {"color": "#b8b7b7", "id": ".catfishing.net", "label": "", "shape": "dot", "size": 2.23606797749979, "title": ".catfishing.net"}, {"color": "#adadd3", "id": ".costco.com", "label": "", "shape": "dot", "size": 3.464101615137755, "title": ".costco.com"}, {"color": "#ca9ee6", "id": ".vite.dev", "label": "", "shape": "dot", "size": 1.0, "title": ".vite.dev"}, {"color": "#aba4ea", "id": ".pbs.org", "label": "", "shape": "dot", "size": 1.0, "title": ".pbs.org"}, {"color": "#a6d189", "id": ".mbhs.edu", "label": "", "shape": "dot", "size": 1.0, "title": ".mbhs.edu"}, {"color": "#a6d189", "id": ".sts.mit.edu", "label": "", "shape": "dot", "size": 1.0, "title": ".sts.mit.edu"}, {"color": "#ca9ee6", "id": ".static1.squarespace.com", "label": "", "shape": "dot", "size": 1.0, "title": ".static1.squarespace.com"}, {"color": "#96b9c6", "id": ".theproofistrivial.com", "label": "", "shape": "dot", "size": 1.414213562373095, "title": ".theproofistrivial.com"}, {"color": "#a7a4ea", "id": ".discover.com", "label": "", "shape": "dot", "size": 3.3166247903554, "title": ".discover.com"}, {"color": "#a6d189", "id": ".starrezhousing.com", "label": "", "shape": "dot", "size": 1.0, "title": ".starrezhousing.com"}, {"color": "#aba4ea", "id": ".cloudflare.com", "label": "", "shape": "dot", "size": 1.0, "title": ".cloudflare.com"}, {"color": "#a2b0d2", "id": ".mit.joinhandshake.com", "label": "", "shape": "dot", "size": 2.0, "title": ".mit.joinhandshake.com"}, {"color": "#a6d189", "id": ".whereis.mit.edu", "label": "", "shape": "dot", "size": 1.0, "title": ".whereis.mit.edu"}, {"color": "#ca9ee6", "id": ".ngedaily.tumblr.com", "label": "", "shape": "dot", "size": 1.0, "title": ".ngedaily.tumblr.com"}, {"color": "#b2a2e9", "id": ".mitprod-my.sharepoint.com", "label": "", "shape": "dot", "size": 1.414213562373095, "title": ".mitprod-my.sharepoint.com"}, {"color": "#ca9ee6", "id": ".dwebcamp.org", "label": "", "shape": "dot", "size": 1.0, "title": ".dwebcamp.org"}, {"color": "#b8b7b7", "id": ".qbreader.org", "label": "", "shape": "dot", "size": 2.23606797749979, "title": ".qbreader.org"}, {"color": "#bdafc5", "id": ".chatgpt.com", "label": "", "shape": "dot", "size": 2.6457513110645903, "title": ".chatgpt.com"}, {"color": "#acadd4", "id": ".hmart.com", "label": "", "shape": "dot", "size": 2.23606797749979, "title": ".hmart.com"}, {"color": "#ca9ee6", "id": ".digitalocean.com", "label": "", "shape": "dot", "size": 1.0, "title": ".digitalocean.com"}, {"color": "#99bdbb", "id": ".baby-name.kr", "label": "", "shape": "dot", "size": 1.0, "title": ".baby-name.kr"}, {"color": "#ca9ee6", "id": ".files.libcom.org", "label": "", "shape": "dot", "size": 1.0, "title": ".files.libcom.org"}, {"color": "#96b9c6", "id": ".fax.plus", "label": "", "shape": "dot", "size": 1.414213562373095, "title": ".fax.plus"}]);
+                  edges = new vis.DataSet([{"from": ".docs.google.com", "to": ".drive.google.com", "width": 4.123105625617661}, {"from": ".docs.google.com", "to": ".docs.new", "width": 1.0}, {"from": ".docs.google.com", "to": ".accounts.google.com", "width": 1.7320508075688774}, {"from": ".docs.google.com", "to": ".accounts.youtube.com", "width": 1.414213562373095}, {"from": ".docs.google.com", "to": ".bit.ly", "width": 1.0}, {"from": ".docs.google.com", "to": ".slides.google.com", "width": 2.23606797749979}, {"from": ".docs.google.com", "to": ".forms.gle", "width": 1.414213562373095}, {"from": ".docs.google.com", "to": ".shorturl.at", "width": 1.0}, {"from": ".docs.google.com", "to": ".drawings.google.com", "width": 1.0}, {"from": ".docs.google.com", "to": ".google.com", "width": 1.0}, {"from": ".drive.google.com", "to": ".accounts.google.com", "width": 1.0}, {"from": ".drive.google.com", "to": ".localhost", "width": 2.0}, {"from": ".drive.google.com", "to": ".chun.cat", "width": 1.7320508075688774}, {"from": ".drive.google.com", "to": ".bit.ly", "width": 1.414213562373095}, {"from": ".drive.google.com", "to": ".google.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".mail.google.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".login.tidal.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".messages.google.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".play.google.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".workspace.google.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".calendar.google.com", "width": 1.414213562373095}, {"from": ".accounts.google.com", "to": ".google.com", "width": 1.7320508075688774}, {"from": ".accounts.google.com", "to": ".overleaf.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".x.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".accounts.youtube.com", "width": 1.0}, {"from": ".accounts.google.com", "to": ".google.zoom.us", "width": 1.0}, {"from": ".accounts.google.com", "to": ".jstor.org", "width": 1.0}, {"from": ".en.wikipedia.org", "to": ".duckduckgo.com", "width": 2.82842712474619}, {"from": ".en.wikipedia.org", "to": ".google.com", "width": 6.324555320336758}, {"from": ".en.wikipedia.org", "to": ".sveltex.dev", "width": 1.0}, {"from": ".pyvis.readthedocs.io", "to": ".duckduckgo.com", "width": 1.414213562373095}, {"from": ".stackoverflow.com", "to": ".duckduckgo.com", "width": 3.0}, {"from": ".stackoverflow.com", "to": ".google.com", "width": 9.746794344808965}, {"from": ".stackoverflow.com", "to": ".github.com", "width": 1.0}, {"from": ".reddit.com", "to": ".duckduckgo.com", "width": 2.0}, {"from": ".reddit.com", "to": ".google.com", "width": 8.0}, {"from": ".reddit.com", "to": ".preview.redd.it", "width": 1.414213562373095}, {"from": ".beebom.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".medium.com", "to": ".duckduckgo.com", "width": 2.0}, {"from": ".medium.com", "to": ".google.com", "width": 2.23606797749979}, {"from": ".messages.google.com", "to": ".android.com", "width": 2.0}, {"from": ".canvas.mit.edu", "to": ".sso.canvaslms.com", "width": 1.414213562373095}, {"from": ".canvas.mit.edu", "to": ".web.mit.edu", "width": 1.0}, {"from": ".sololearn.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".developer.mozilla.org", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".developer.mozilla.org", "to": ".wiki.mozilla.org", "width": 1.0}, {"from": ".developer.mozilla.org", "to": ".support.mozilla.org", "width": 1.0}, {"from": ".developer.mozilla.org", "to": ".google.com", "width": 2.6457513110645903}, {"from": ".developer.mozilla.org", "to": ".svelte.dev", "width": 1.414213562373095}, {"from": ".d3js.org", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".catppuccin.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".github.com", "to": ".duckduckgo.com", "width": 1.414213562373095}, {"from": ".github.com", "to": ".pyvis.readthedocs.io", "width": 1.0}, {"from": ".github.com", "to": ".docs.google.com", "width": 1.0}, {"from": ".github.com", "to": ".gist.github.com", "width": 1.414213562373095}, {"from": ".github.com", "to": ".elixirforum.com", "width": 1.0}, {"from": ".github.com", "to": ".reddit.com", "width": 1.414213562373095}, {"from": ".github.com", "to": ".gabrielatwell.com", "width": 1.0}, {"from": ".github.com", "to": ".google.com", "width": 3.162277660168379}, {"from": ".github.com", "to": ".vercel.com", "width": 1.0}, {"from": ".github.com", "to": ".localhost", "width": 1.0}, {"from": ".github.com", "to": ".crystaljjlee.com", "width": 1.414213562373095}, {"from": ".github.com", "to": ".tailwindcss.com", "width": 1.414213562373095}, {"from": ".github.com", "to": ".astro.build", "width": 1.0}, {"from": ".github.com", "to": ".npmjs.com", "width": 1.0}, {"from": ".github.com", "to": ".app.cvat.ai", "width": 1.414213562373095}, {"from": ".github.com", "to": ".archive.org", "width": 1.414213562373095}, {"from": ".alanzucconi.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".playwright.dev", "to": ".sveltex.dev", "width": 1.0}, {"from": ".themusicemporium.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".bpl.org", "to": ".na.network-auth.com", "width": 1.0}, {"from": ".ab-initio.mit.edu", "to": ".math.mit.edu", "width": 1.414213562373095}, {"from": ".inria.fr", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".beepb00p.xyz", "to": ".vineeth.io", "width": 1.0}, {"from": ".x.com", "to": ".twitter.com", "width": 1.7320508075688774}, {"from": ".twitter.com", "to": ".beepb00p.xyz", "width": 1.0}, {"from": ".twitter.com", "to": ".rmeit.github.io", "width": 1.0}, {"from": ".twitter.com", "to": ".google.com", "width": 1.0}, {"from": ".wiki.hypr.land", "to": ".wiki.hyprland.org", "width": 1.0}, {"from": ".w3schools.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".w3schools.com", "to": ".google.com", "width": 2.6457513110645903}, {"from": ".networkx.org", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".hub.2i2c.mybinder.org", "to": ".mybinder.org", "width": 1.0}, {"from": ".mybinder.org", "to": ".github.com", "width": 1.0}, {"from": ".discord.com", "to": ".letterboxd.com", "width": 1.0}, {"from": ".discord.com", "to": ".ec.mit.edu", "width": 1.0}, {"from": ".guitarcenter.com", "to": ".stores.guitarcenter.com", "width": 1.0}, {"from": ".guitarworld.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".stores.guitarcenter.com", "to": ".google.com", "width": 1.0}, {"from": ".sweetwater.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".outlook.office.com", "to": ".login.microsoftonline.com", "width": 3.8729833462074166}, {"from": ".outlook.office.com", "to": ".webmail.mit.edu", "width": 1.0}, {"from": ".outlook.office.com", "to": ".us.azureauth.duosecurity.com", "width": 1.0}, {"from": ".cm.maxient.com", "to": ".idp.mit.edu", "width": 1.7320508075688774}, {"from": ".idp.mit.edu", "to": ".okta.mit.edu", "width": 5.744562646538029}, {"from": ".idp.mit.edu", "to": ".canvas.mit.edu", "width": 1.414213562373095}, {"from": ".idp.mit.edu", "to": ".mit-saml.proxy.cirrusidentity.com", "width": 1.414213562373095}, {"from": ".idp.mit.edu", "to": ".connect.openathens.net", "width": 1.0}, {"from": ".idp.mit.edu", "to": ".eduapps.mit.edu", "width": 1.7320508075688774}, {"from": ".idp.mit.edu", "to": ".touchnet.mit.edu", "width": 2.0}, {"from": ".idp.mit.edu", "to": ".student.mit.edu", "width": 2.6457513110645903}, {"from": ".idp.mit.edu", "to": ".shimmer.mit.edu", "width": 1.7320508075688774}, {"from": ".idp.mit.edu", "to": ".atlas-auth.mit.edu", "width": 2.23606797749979}, {"from": ".idp.mit.edu", "to": ".mit.starrezhousing.com", "width": 1.7320508075688774}, {"from": ".idp.mit.edu", "to": ".mit.zoom.us", "width": 1.7320508075688774}, {"from": ".idp.mit.edu", "to": ".fireroad.mit.edu", "width": 2.23606797749979}, {"from": ".idp.mit.edu", "to": ".api-18611828.duosecurity.com", "width": 1.0}, {"from": ".idp.mit.edu", "to": ".duo.mit.edu", "width": 1.0}, {"from": ".okta.mit.edu", "to": ".accounts.google.com", "width": 1.7320508075688774}, {"from": ".okta.mit.edu", "to": ".downloads.mit.edu", "width": 1.0}, {"from": ".okta.mit.edu", "to": ".eecseduportal.mit.edu", "width": 1.414213562373095}, {"from": ".okta.mit.edu", "to": ".api-18611828.duosecurity.com", "width": 2.4494897427831783}, {"from": ".okta.mit.edu", "to": ".login.microsoftonline.com", "width": 1.0}, {"from": ".okta.mit.edu", "to": ".sites.mit.edu", "width": 1.0}, {"from": ".googleusercontent.com", "to": ".mail.google.com", "width": 1.414213562373095}, {"from": ".googleusercontent.com", "to": ".docs.google.com", "width": 2.23606797749979}, {"from": ".freeconvert.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".freeconvert.com", "to": ".google.com", "width": 1.0}, {"from": ".huffpost.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".wcvb.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".13wmaz.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".webcamera.io", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".askubuntu.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".askubuntu.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".google.com", "to": ".maps.google.com", "width": 3.8729833462074166}, {"from": ".google.com", "to": ".mail.google.com", "width": 2.23606797749979}, {"from": ".google.com", "to": ".books.google.com", "width": 1.414213562373095}, {"from": ".honeygrow.com", "to": ".google.com", "width": 1.0}, {"from": ".visjs.github.io", "to": ".pyvis.readthedocs.io", "width": 1.0}, {"from": ".plotly.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".tidal.com", "to": ".login.tidal.com", "width": 1.0}, {"from": ".play.google.com", "to": ".android.com", "width": 1.0}, {"from": ".wiki.mozilla.org", "to": ".stackoverflow.com", "width": 1.0}, {"from": ".geeksforgeeks.org", "to": ".duckduckgo.com", "width": 1.7320508075688774}, {"from": ".geeksforgeeks.org", "to": ".google.com", "width": 2.23606797749979}, {"from": ".sqlitetutorial.net", "to": ".duckduckgo.com", "width": 1.414213562373095}, {"from": ".math.stackexchange.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".math.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".intrologic.stanford.edu", "to": ".duckduckgo.com", "width": 1.414213562373095}, {"from": ".overleaf.com", "to": ".duckduckgo.com", "width": 1.414213562373095}, {"from": ".foxtonforensics.com", "to": ".duckduckgo.com", "width": 1.414213562373095}, {"from": ".foxtonforensics.com", "to": ".google.com", "width": 1.0}, {"from": ".gist.github.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".support.mozilla.org", "to": ".ellen.dev", "width": 1.0}, {"from": ".support.mozilla.org", "to": ".google.com", "width": 1.414213562373095}, {"from": ".linuxvox.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".downloads.mit.edu", "to": ".ist.mit.edu", "width": 1.0}, {"from": ".ist.mit.edu", "to": ".kb.mit.edu", "width": 1.0}, {"from": ".ist.mit.edu", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".ist.mit.edu", "to": ".google.com", "width": 1.414213562373095}, {"from": ".kb.mit.edu", "to": ".google.com", "width": 2.0}, {"from": ".cloud.securew2.com", "to": ".getonline.harvard.edu", "width": 1.0}, {"from": ".getonline.harvard.edu", "to": ".detectportal.firefox.com", "width": 1.0}, {"from": ".decisionproblem.com", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".chun.cat", "to": ".github.com", "width": 1.0}, {"from": ".khoury.northeastern.edu", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".ctan.math.illinois.edu", "to": ".mirrors.ctan.org", "width": 1.0}, {"from": ".mirrors.ctan.org", "to": ".ctan.org", "width": 1.414213562373095}, {"from": ".mirrors.ibiblio.org", "to": ".mirrors.ctan.org", "width": 1.0}, {"from": ".ctan.org", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".tex.stackexchange.com", "to": ".reddit.com", "width": 1.0}, {"from": ".tex.stackexchange.com", "to": ".duckduckgo.com", "width": 1.414213562373095}, {"from": ".tex.stackexchange.com", "to": ".google.com", "width": 1.0}, {"from": ".tug.org", "to": ".duckduckgo.com", "width": 1.0}, {"from": ".sso.canvaslms.com", "to": ".idp.mit.edu", "width": 1.414213562373095}, {"from": ".api-18611828.duosecurity.com", "to": ".ca.mit.edu", "width": 1.414213562373095}, {"from": ".nirsoft.net", "to": ".support.mozilla.org", "width": 1.0}, {"from": ".en.wikiversity.org", "to": ".google.com", "width": 1.0}, {"from": ".jstor.org", "to": ".google.com", "width": 1.414213562373095}, {"from": ".web.mit.edu", "to": ".google.com", "width": 1.7320508075688774}, {"from": ".na.network-auth.com", "to": ".detectportal.firefox.com", "width": 1.7320508075688774}, {"from": ".citi.com", "to": ".google.com", "width": 1.0}, {"from": ".underground-guide.mit.edu", "to": ".hydrant.mit.edu", "width": 1.414213562373095}, {"from": ".hilton.com", "to": ".secure.guestinternet.com", "width": 1.414213562373095}, {"from": ".secure.guestinternet.com", "to": ".bospb.cust.blueprintrf.com", "width": 1.0}, {"from": ".secure.guestinternet.com", "to": ".secure.11os.com", "width": 1.0}, {"from": ".bospb.cust.blueprintrf.com", "to": ".detectportal.firefox.com", "width": 1.0}, {"from": ".secure.11os.com", "to": ".na.network-auth.com", "width": 1.0}, {"from": ".help.vivaldi.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".forum.vivaldi.net", "to": ".google.com", "width": 1.0}, {"from": ".login.live.com", "to": ".account.live.com", "width": 1.0}, {"from": ".account.live.com", "to": ".help.vivaldi.com", "width": 1.0}, {"from": ".cloud.wikis.utexas.edu", "to": ".wikis.utexas.edu", "width": 1.0}, {"from": ".wikis.utexas.edu", "to": ".reddit.com", "width": 1.0}, {"from": ".learn.microsoft.com", "to": ".google.com", "width": 1.0}, {"from": ".ca.mit.edu", "to": ".ist.mit.edu", "width": 1.0}, {"from": ".downloads.vivaldi.com", "to": ".vivaldi.com", "width": 1.0}, {"from": ".vivaldi.com", "to": ".google.com", "width": 1.7320508075688774}, {"from": ".letterboxd.com", "to": ".google.com", "width": 1.0}, {"from": ".letterboxd.com", "to": ".boxd.it", "width": 2.23606797749979}, {"from": ".obsidian.md", "to": ".google.com", "width": 3.464101615137755}, {"from": ".mittakedaprogram.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".adg.csail.mit.edu", "to": ".rmeit.github.io", "width": 1.0}, {"from": ".rmeit.github.io", "to": ".google.com", "width": 1.414213562373095}, {"from": ".genius.com", "to": ".google.com", "width": 1.0}, {"from": ".sveltex.dev", "to": ".google.com", "width": 1.0}, {"from": ".elixirforum.com", "to": ".google.com", "width": 1.0}, {"from": ".marketplace.visualstudio.com", "to": ".google.com", "width": 1.0}, {"from": ".dev.to", "to": ".google.com", "width": 2.0}, {"from": ".joshcollinsworth.com", "to": ".google.com", "width": 1.0}, {"from": ".svelte.dev", "to": ".google.com", "width": 5.099019513592785}, {"from": ".svelte.dev", "to": ".learn.svelte.dev", "width": 1.0}, {"from": ".svelte.dev", "to": ".kit.svelte.dev", "width": 1.7320508075688774}, {"from": ".svelte.dev", "to": ".reddit.com", "width": 1.0}, {"from": ".svelte.dev", "to": ".cemeterysummoning.github.io", "width": 1.0}, {"from": ".svelte.dev", "to": ".localhost", "width": 1.0}, {"from": ".bryananthonio.com", "to": ".google.com", "width": 1.0}, {"from": ".kit.svelte.dev", "to": ".reddit.com", "width": 1.414213562373095}, {"from": ".kit.svelte.dev", "to": ".stackoverflow.com", "width": 1.0}, {"from": ".tailwindcss.com", "to": ".google.com", "width": 4.0}, {"from": ".tailwindcss.com", "to": ".npmjs.com", "width": 1.0}, {"from": ".vercel.com", "to": ".reddit.com", "width": 1.0}, {"from": ".vercel.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".vercel.com", "to": ".website-v2-7qne7hx63-cemeterysummonings-projects.vercel.app", "width": 1.0}, {"from": ".vercel.com", "to": ".svelte.dev", "width": 1.0}, {"from": ".svgrepo.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".codesandbox.io", "to": ".reddit.com", "width": 1.0}, {"from": ".shadcn-svelte.com", "to": ".google.com", "width": 1.0}, {"from": ".vim.rtorr.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".builder.io", "to": ".google.com", "width": 1.0}, {"from": ".website-v2-tau-gules.vercel.app", "to": ".vercel.com", "width": 1.7320508075688774}, {"from": ".ticketmaster.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".superuser.com", "to": ".google.com", "width": 1.0}, {"from": ".sw.kovidgoyal.net", "to": ".google.com", "width": 1.0}, {"from": ".maxwellrules.com", "to": ".google.com", "width": 1.0}, {"from": ".windsurf.com", "to": ".codeium.com", "width": 1.0}, {"from": ".codeium.com", "to": ".vineeth.io", "width": 1.0}, {"from": ".vineeth.io", "to": ".google.com", "width": 1.0}, {"from": ".mit-saml.proxy.cirrusidentity.com", "to": ".apps.cirrusidentity.com", "width": 1.414213562373095}, {"from": ".mit-saml.proxy.cirrusidentity.com", "to": ".fadata.mit.edu", "width": 1.414213562373095}, {"from": ".eecseduportal.mit.edu", "to": ".eecs.mit.edu", "width": 1.414213562373095}, {"from": ".eecs.mit.edu", "to": ".google.com", "width": 3.0}, {"from": ".notion.so", "to": ".notion.com", "width": 1.0}, {"from": ".notion.com", "to": ".google.com", "width": 1.0}, {"from": ".researchgate.net", "to": ".google.com", "width": 1.0}, {"from": ".topoi.net", "to": ".google.com", "width": 1.0}, {"from": ".dropbox.com", "to": ".reddit.com", "width": 1.0}, {"from": ".polyinnovator.space", "to": ".google.com", "width": 1.0}, {"from": ".fastmachinelearning.org", "to": ".google.com", "width": 1.0}, {"from": ".arxiv.org", "to": ".google.com", "width": 2.6457513110645903}, {"from": ".careers.ibm.com", "to": ".qmunity.thequantuminsider.com", "width": 1.0}, {"from": ".qmunity.thequantuminsider.com", "to": ".google.com", "width": 1.0}, {"from": ".ibm.com", "to": ".google.com", "width": 1.0}, {"from": ".programmes.polytechnique.edu", "to": ".google.com", "width": 1.414213562373095}, {"from": ".ip-paris.fr", "to": ".google.com", "width": 1.0}, {"from": ".tudelft.nl", "to": ".google.com", "width": 1.414213562373095}, {"from": ".journals.aps.org", "to": ".link.aps.org", "width": 1.0}, {"from": ".connect.openathens.net", "to": ".wayfinder.openathens.net", "width": 1.0}, {"from": ".connect.openathens.net", "to": ".journals.aps.org", "width": 1.0}, {"from": ".link.aps.org", "to": ".google.com", "width": 1.0}, {"from": ".architecture.mit.edu", "to": ".hydrant.mit.edu", "width": 1.0}, {"from": ".eduapps.mit.edu", "to": ".sisapp.mit.edu", "width": 1.7320508075688774}, {"from": ".sisapp.mit.edu", "to": ".hydrant.mit.edu", "width": 1.414213562373095}, {"from": ".mitadmissions.org", "to": ".google.com", "width": 1.0}, {"from": ".lps.umd.edu", "to": ".google.com", "width": 1.7320508075688774}, {"from": ".megamitensei.fandom.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".moma.org", "to": ".google.com", "width": 1.0}, {"from": ".touchnet.mit.edu", "to": ".student.mit.edu", "width": 1.7320508075688774}, {"from": ".student.mit.edu", "to": ".websis.mit.edu", "width": 2.4494897427831783}, {"from": ".student.mit.edu", "to": ".registrar.mit.edu", "width": 1.414213562373095}, {"from": ".student.mit.edu", "to": ".hydrant.mit.edu", "width": 1.414213562373095}, {"from": ".student.mit.edu", "to": ".misti.mit.edu", "width": 1.0}, {"from": ".websis.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".matplotlib.org", "to": ".google.com", "width": 3.3166247903554}, {"from": ".matplotlib.org", "to": ".stackoverflow.com", "width": 1.0}, {"from": ".bungostraydogs.fandom.com", "to": ".google.com", "width": 1.0}, {"from": ".ocw.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".yaledailynews.com", "to": ".google.com", "width": 1.0}, {"from": ".community.tiller.com", "to": ".google.com", "width": 1.0}, {"from": ".secure.chase.com", "to": ".account.chase.com", "width": 1.414213562373095}, {"from": ".usa.experian.com", "to": ".experian.com", "width": 1.414213562373095}, {"from": ".experian.com", "to": ".google.com", "width": 1.0}, {"from": ".mastercard.com", "to": ".mastercard.us", "width": 1.0}, {"from": ".mastercard.us", "to": ".google.com", "width": 1.0}, {"from": ".sofi.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".sofi.com", "to": ".nerdwallet.com", "width": 1.414213562373095}, {"from": ".acephale.info", "to": ".google.com", "width": 1.0}, {"from": ".nosubject.com", "to": ".google.com", "width": 1.0}, {"from": ".cpb-us-e1.wpmucdn.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".etsy.com", "to": ".acidhorizonpodcast.com", "width": 1.0}, {"from": ".contagionpress.com", "to": ".acephale.info", "width": 1.0}, {"from": ".youtube.com", "to": ".youtu.be", "width": 1.0}, {"from": ".youtube.com", "to": ".google.com", "width": 1.0}, {"from": ".mission17.org", "to": ".google.com", "width": 1.0}, {"from": ".acidhorizonpodcast.com", "to": ".google.com", "width": 1.0}, {"from": ".bpb-us-e1.wpmucdn.com", "to": ".boundarylanguage.psu.edu", "width": 1.0}, {"from": ".bpb-us-e1.wpmucdn.com", "to": ".sites.mit.edu", "width": 1.414213562373095}, {"from": ".boundarylanguage.psu.edu", "to": ".google.com", "width": 1.0}, {"from": ".ipsa.psu.edu", "to": ".google.com", "width": 1.0}, {"from": ".youtu.be", "to": ".reddit.com", "width": 1.0}, {"from": ".calendar.notion.so", "to": ".marketplace.zoom.us", "width": 1.0}, {"from": ".openstax.org", "to": ".kinetic.openstax.org", "width": 1.0}, {"from": ".app.cvat.ai", "to": ".cvat.ai", "width": 1.7320508075688774}, {"from": ".docs.cvat.ai", "to": ".google.com", "width": 1.414213562373095}, {"from": ".cvat.ai", "to": ".google.com", "width": 1.0}, {"from": ".crummy.com", "to": ".google.com", "width": 1.0}, {"from": ".pypi.org", "to": ".google.com", "width": 1.0}, {"from": ".teddykw2.wordpress.com", "to": ".teddykw2.files.wordpress.com", "width": 1.0}, {"from": ".teddykw2.files.wordpress.com", "to": ".google.com", "width": 1.0}, {"from": ".mit.zoom.us", "to": ".google.zoom.us", "width": 1.0}, {"from": ".bit.ly", "to": ".solidaritycinema.com", "width": 1.0}, {"from": ".bit.ly", "to": ".putz.mit.edu", "width": 1.414213562373095}, {"from": ".solidaritycinema.com", "to": ".letterboxd.com", "width": 1.0}, {"from": ".archive.org", "to": ".google.com", "width": 1.414213562373095}, {"from": ".archive.org", "to": ".blog.archive.org", "width": 1.414213562373095}, {"from": ".eecsla.mit.edu", "to": ".shimmer.mit.edu", "width": 2.6457513110645903}, {"from": ".eecsla.mit.edu", "to": ".google.com", "width": 1.414213562373095}, {"from": ".shimmer.mit.edu", "to": ".wayf.mit.edu", "width": 1.7320508075688774}, {"from": ".shimmer.mit.edu", "to": ".py.mit.edu", "width": 1.0}, {"from": ".wayf.mit.edu", "to": ".fireroad.mit.edu", "width": 2.23606797749979}, {"from": ".brand.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".scipost.org", "to": ".google.com", "width": 1.0}, {"from": ".onr.navy.mil", "to": ".research.illinois.edu", "width": 1.0}, {"from": ".research.illinois.edu", "to": ".google.com", "width": 1.0}, {"from": ".pubs.aip.org", "to": ".google.com", "width": 1.0}, {"from": ".colorado.edu", "to": ".google.com", "width": 1.0}, {"from": ".cqe.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".amazon.com", "to": ".a.co", "width": 1.0}, {"from": ".amazon.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".gabrielatwell.com", "to": ".reddit.com", "width": 1.0}, {"from": ".cemeterysummoning.github.io", "to": ".github.com", "width": 2.4494897427831783}, {"from": ".cemeterysummoning.github.io", "to": ".chun.cat", "width": 1.0}, {"from": ".docs.github.com", "to": ".github.com", "width": 1.0}, {"from": ".tumblr.com", "to": ".dxsxdxrium.tumblr.com", "width": 1.0}, {"from": ".mgregersen.dk", "to": ".google.com", "width": 1.0}, {"from": ".gwu.edu", "to": ".cppmadmin.it.gwu.edu", "width": 1.0}, {"from": ".cppmadmin.it.gwu.edu", "to": ".detectportal.firefox.com", "width": 1.0}, {"from": ".tutorialspoint.com", "to": ".google.com", "width": 1.0}, {"from": ".caniuse.com", "to": ".stackoverflow.com", "width": 1.0}, {"from": ".s181.convertio.me", "to": ".convertio.co", "width": 1.0}, {"from": ".convertio.co", "to": ".google.com", "width": 1.0}, {"from": ".last.fm", "to": ".google.com", "width": 1.0}, {"from": ".last.fm", "to": ".discord.com", "width": 2.23606797749979}, {"from": ".mbhsmagnet.org", "to": ".google.com", "width": 1.0}, {"from": ".steelcitycodes.org", "to": ".google.com", "width": 1.0}, {"from": ".ccrl.umd.edu", "to": ".google.com", "width": 1.0}, {"from": ".beaverworks.ll.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".futuretech.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".nist.gov", "to": ".google.com", "width": 2.0}, {"from": ".nist.gov", "to": ".discord.com", "width": 1.414213562373095}, {"from": ".random-ize.com", "to": ".google.com", "width": 1.0}, {"from": ".smarthistory.org", "to": ".google.com", "width": 1.0}, {"from": ".sts-program.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".mit.edu", "to": ".math.mit.edu", "width": 1.0}, {"from": ".cran.r-project.org", "to": ".google.com", "width": 1.0}, {"from": ".alpha.nist.gov", "to": ".detectportal.firefox.com", "width": 1.0}, {"from": ".crystaljjlee.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".v1.tailwindcss.com", "to": ".google.com", "width": 1.0}, {"from": ".forum.freecodecamp.org", "to": ".google.com", "width": 1.0}, {"from": ".w3.org", "to": ".google.com", "width": 1.0}, {"from": ".flowbite.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".tiktok.com", "to": ".google.com", "width": 1.0}, {"from": ".figma.com", "to": ".google.com", "width": 1.0}, {"from": ".fonts.google.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".tracyssewingstudio.com", "to": ".google.com", "width": 1.0}, {"from": ".wikihow.com", "to": ".google.com", "width": 1.0}, {"from": ".linktr.ee", "to": ".discord.com", "width": 1.0}, {"from": ".linktr.ee", "to": ".l.instagram.com", "width": 1.0}, {"from": ".vscode.download.prss.microsoft.com", "to": ".code.visualstudio.com", "width": 1.414213562373095}, {"from": ".nodejs.org", "to": ".google.com", "width": 1.0}, {"from": ".npmjs.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".docs.astro.build", "to": ".google.com", "width": 1.414213562373095}, {"from": ".astro.build", "to": ".google.com", "width": 1.7320508075688774}, {"from": ".astro.build", "to": ".johnnydecimal.com", "width": 1.0}, {"from": ".willhath.com", "to": ".putz.mit.edu", "width": 1.0}, {"from": ".sites.mit.edu", "to": ".mit.us22.list-manage.com", "width": 1.0}, {"from": ".mitguidetoresidences.mit.edu", "to": ".mit.us22.list-manage.com", "width": 1.0}, {"from": ".mitguidetoresidences.mit.edu", "to": ".studentlife.mit.edu", "width": 1.0}, {"from": ".app.zoom.us", "to": ".umd.zoom.us", "width": 2.82842712474619}, {"from": ".app.zoom.us", "to": ".mit.zoom.us", "width": 1.414213562373095}, {"from": ".umd.zoom.us", "to": ".discord.com", "width": 1.414213562373095}, {"from": ".umd.zoom.us", "to": ".calendar.notion.so", "width": 2.23606797749979}, {"from": ".idss.mit.edu", "to": ".google.com", "width": 1.414213562373095}, {"from": ".catalog.mit.edu", "to": ".idss.mit.edu", "width": 1.0}, {"from": ".elx.mit.edu", "to": ".atlas-auth.mit.edu", "width": 1.7320508075688774}, {"from": ".latex2image.joeraut.com", "to": ".google.com", "width": 1.0}, {"from": ".mit.starrezhousing.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".stopkosa.com", "to": ".discord.com", "width": 1.0}, {"from": ".xmortis.com", "to": ".google.com", "width": 1.0}, {"from": ".astroship.web3templates.com", "to": ".github.com", "width": 1.0}, {"from": ".stackblitz.com", "to": ".github.com", "width": 1.0}, {"from": ".nngroup.com", "to": ".google.com", "width": 1.0}, {"from": ".forum.squarespace.com", "to": ".google.com", "width": 1.0}, {"from": ".johnnydecimal.com", "to": ".reddit.com", "width": 1.0}, {"from": ".flickr.com", "to": ".ladyada.net", "width": 1.0}, {"from": ".flickr.com", "to": ".math.mit.edu", "width": 1.414213562373095}, {"from": ".adafruit.com", "to": ".ladyada.net", "width": 1.0}, {"from": ".mitpress.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".make.mit.edu", "to": ".project-manus.libcal.com", "width": 1.0}, {"from": ".project-manus.libcal.com", "to": ".google.com", "width": 1.0}, {"from": ".when2meet.com", "to": ".google.com", "width": 1.0}, {"from": ".when2meet.com", "to": ".discord.com", "width": 1.0}, {"from": ".pimeyes.com", "to": ".google.com", "width": 1.0}, {"from": ".facecheck.id", "to": ".google.com", "width": 1.0}, {"from": ".nikola.fluidinterfaces.com", "to": ".astro.build", "width": 1.0}, {"from": ".getbootstrap.com", "to": ".discourse.gohugo.io", "width": 1.0}, {"from": ".discourse.gohugo.io", "to": ".google.com", "width": 1.0}, {"from": ".netlify.com", "to": ".johnnydecimal.com", "width": 1.0}, {"from": ".my.clevelandclinic.org", "to": ".google.com", "width": 1.0}, {"from": ".studentlife.mit.edu", "to": ".google.com", "width": 2.4494897427831783}, {"from": ".nerdwallet.com", "to": ".google.com", "width": 1.0}, {"from": ".americanexpress.com", "to": ".goto.americanexpress.com", "width": 1.0}, {"from": ".goto.americanexpress.com", "to": ".nerdwallet.com", "width": 1.0}, {"from": ".urop.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".urop.mit.edu", "to": ".eecs.mit.edu", "width": 1.0}, {"from": ".mit.studentemployment.ngwebsolutions.com", "to": ".eecs.mit.edu", "width": 1.0}, {"from": ".mailman.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".zoom.com", "to": ".zoom.us", "width": 1.0}, {"from": ".zoom.us", "to": ".support.zoom.com", "width": 1.0}, {"from": ".zoom.us", "to": ".idp.mit.edu", "width": 1.0}, {"from": ".zoom.us", "to": ".accounts.google.com", "width": 1.0}, {"from": ".support.zoom.com", "to": ".google.com", "width": 1.0}, {"from": ".marketplace.zoom.us", "to": ".zoom.us", "width": 1.0}, {"from": ".google.zoom.us", "to": ".zoom.us", "width": 1.0}, {"from": ".misti.mit.edu", "to": ".eecs.mit.edu", "width": 1.0}, {"from": ".misti.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".introml.mit.edu", "to": ".eecsla.mit.edu", "width": 1.0}, {"from": ".py.mit.edu", "to": ".eecsla.mit.edu", "width": 1.0}, {"from": ".sigmaaldrich.com", "to": ".google.com", "width": 1.0}, {"from": ".themoviedb.org", "to": ".letterboxd.com", "width": 1.0}, {"from": ".themoviedb.org", "to": ".google.com", "width": 1.0}, {"from": ".eriksson.physics.wisc.edu", "to": ".physics.wisc.edu", "width": 1.0}, {"from": ".physics.wisc.edu", "to": ".google.com", "width": 1.0}, {"from": ".baeldung.com", "to": ".google.com", "width": 1.0}, {"from": ".science.smith.edu", "to": ".google.com", "width": 1.0}, {"from": ".courseroad.mit.edu", "to": ".fireroad.mit.edu", "width": 1.7320508075688774}, {"from": ".people.csail.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".uvm.edu", "to": ".google.com", "width": 1.0}, {"from": ".dokumen.pub", "to": ".google.com", "width": 1.0}, {"from": ".oa.mg", "to": ".google.com", "width": 1.0}, {"from": ".stats.stackexchange.com", "to": ".google.com", "width": 1.7320508075688774}, {"from": ".mediaperipheries.otago.ac.nz", "to": ".google.com", "width": 1.414213562373095}, {"from": ".othervoices.org", "to": ".google.com", "width": 1.0}, {"from": ".tandfonline.com", "to": ".google.com", "width": 1.0}, {"from": ".songsterr.com", "to": ".google.com", "width": 1.0}, {"from": ".woodsholefilmfestival.org", "to": ".google.com", "width": 1.0}, {"from": ".talamas.com", "to": ".woodsholefilmfestival.org", "width": 1.0}, {"from": ".woods-hole-film-festival.square.site", "to": ".woodsholefilmfestival.org", "width": 1.0}, {"from": ".quantumcomputing.stackexchange.com", "to": ".google.com", "width": 1.0}, {"from": ".inspirehep.net", "to": ".google.com", "width": 1.0}, {"from": ".scholar.google.com", "to": ".google.com", "width": 1.0}, {"from": ".medlinks.mit.edu", "to": ".ec.mit.edu", "width": 1.0}, {"from": ".duo.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".account.chase.com", "to": ".chase.com", "width": 1.414213562373095}, {"from": ".chase.com", "to": ".secure.chase.com", "width": 1.0}, {"from": ".dolanuyghur.com", "to": ".google.com", "width": 1.0}, {"from": ".i.sstatic.net", "to": ".stackoverflow.com", "width": 1.0}, {"from": ".gis.stackexchange.com", "to": ".google.com", "width": 1.0}, {"from": ".numpy.org", "to": ".google.com", "width": 2.0}, {"from": ".futurelearn.com", "to": ".misti.mit.edu", "width": 1.0}, {"from": ".starrez.com", "to": ".mit.starrezhousing.com", "width": 1.0}, {"from": ".geogebra.org", "to": ".google.com", "width": 1.414213562373095}, {"from": ".desmos.com", "to": ".google.com", "width": 1.0}, {"from": ".labelme.io", "to": ".google.com", "width": 1.0}, {"from": ".elilifland.com", "to": ".google.com", "width": 1.0}, {"from": ".philosophy.stackexchange.com", "to": ".google.com", "width": 1.0}, {"from": ".philosophy.stackexchange.com", "to": ".physics.stackexchange.com", "width": 1.0}, {"from": ".qudev.phys.ethz.ch", "to": ".google.com", "width": 1.0}, {"from": ".physics.stackexchange.com", "to": ".google.com", "width": 1.0}, {"from": ".diy.stackexchange.com", "to": ".physics.stackexchange.com", "width": 1.0}, {"from": ".silver.afi.com", "to": ".afisilver.afi.com", "width": 1.0}, {"from": ".imdb.com", "to": ".discord.com", "width": 1.0}, {"from": ".megacityreview.org", "to": ".google.com", "width": 1.0}, {"from": ".imgflip.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".lacan.com", "to": ".reddit.com", "width": 1.0}, {"from": ".redactle.net", "to": ".redactle-unlimited.com", "width": 1.0}, {"from": ".redactle-unlimited.com", "to": ".redactle.anybrowser.org", "width": 1.0}, {"from": ".redactle.anybrowser.org", "to": ".google.com", "width": 1.0}, {"from": ".quora.com", "to": ".google.com", "width": 1.0}, {"from": ".xenopraxis.net", "to": ".google.com", "width": 1.0}, {"from": ".monoskop.org", "to": ".google.com", "width": 1.0}, {"from": ".marcuse.org", "to": ".google.com", "width": 1.0}, {"from": ".lunaimaging.com", "to": ".archive.org", "width": 1.0}, {"from": ".help.archive.org", "to": ".archive.org", "width": 1.414213562373095}, {"from": ".blog.rayberger.org", "to": ".rayberger.org", "width": 1.0}, {"from": ".rayberger.org", "to": ".github.com", "width": 1.0}, {"from": ".contribute.cncf.io", "to": ".google.com", "width": 1.0}, {"from": ".blog.archive.org", "to": ".google.com", "width": 1.414213562373095}, {"from": ".open.spotify.com", "to": ".discord.com", "width": 1.0}, {"from": ".nerdfighteria.info", "to": ".google.com", "width": 1.0}, {"from": ".yesstyle.com", "to": ".google.com", "width": 1.0}, {"from": ".melanocc.com.my", "to": ".google.com", "width": 1.0}, {"from": ".japanesetaste.com", "to": ".google.com", "width": 1.0}, {"from": ".dbknews.com", "to": ".google.com", "width": 1.0}, {"from": ".uwprod-my.sharepoint.com", "to": ".google.com", "width": 1.0}, {"from": ".carlkho-cvk.medium.com", "to": ".google.com", "width": 1.0}, {"from": ".t-mobile.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".highonfilms.com", "to": ".letterboxd.com", "width": 1.0}, {"from": ".origami-art.us", "to": ".google.com", "width": 1.0}, {"from": ".homepages.inf.ed.ac.uk", "to": ".google.com", "width": 1.0}, {"from": ".students.care26.com", "to": ".auth.care26.com", "width": 1.0}, {"from": ".students.care26.com", "to": ".email1.ahpcare.com", "width": 1.0}, {"from": ".auth.care26.com", "to": ".okta.mit.edu", "width": 1.0}, {"from": ".email1.ahpcare.com", "to": ".email.ahpcare.com", "width": 1.0}, {"from": ".math.purdue.edu", "to": ".google.com", "width": 1.0}, {"from": ".alamo.edu", "to": ".google.com", "width": 1.0}, {"from": ".education.launchcode.org", "to": ".google.com", "width": 1.0}, {"from": ".packaging.python.org", "to": ".stackoverflow.com", "width": 1.0}, {"from": ".docs.python.org", "to": ".google.com", "width": 1.0}, {"from": ".discourse.matplotlib.org", "to": ".google.com", "width": 1.0}, {"from": ".opencv.org", "to": ".google.com", "width": 1.0}, {"from": ".analyticsvidhya.com", "to": ".google.com", "width": 1.414213562373095}, {"from": ".qce.quantum.ieee.org", "to": ".google.com", "width": 1.0}, {"from": ".weeavemagazine.com", "to": ".l.instagram.com", "width": 1.0}, {"from": ".l.instagram.com", "to": ".instagram.com", "width": 1.414213562373095}, {"from": ".veganiac.com", "to": ".reddit.com", "width": 1.0}, {"from": ".act.mit.edu", "to": ".google.com", "width": 1.0}, {"from": ".discuss.pytorch.org", "to": ".google.com", "width": 1.414213562373095}, {"from": ".linkedin.com", "to": ".chun.cat", "width": 1.0}, {"from": ".tuatini.me", "to": ".stackoverflow.com", "width": 1.0}, {"from": ".qupath.readthedocs.io", "to": ".google.com", "width": 1.0}, {"from": ".iagsdc.org", "to": ".google.com", "width": 1.0}, {"from": ".spirit.com", "to": ".google.com", "width": 1.0}, {"from": ".orcid.org", "to": ".google.com", "width": 1.0}, {"from": ".nkimillustrate.weebly.com", "to": ".nkim-illustrates.tumblr.com", "width": 1.0}, {"from": ".nkim-illustrates.tumblr.com", "to": ".tumblr.com", "width": 1.0}, {"from": ".somervilletheatre.com", "to": ".screenboston.com", "width": 1.0}, {"from": ".urbanomic.com", "to": ".google.com", "width": 1.0}, {"from": ".antithesi.gr", "to": ".reddit.com", "width": 1.0}, {"from": ".blacksmithgu.github.io", "to": ".google.com", "width": 1.0}, {"from": ".viagogo.com", "to": ".google.com", "width": 1.0}, {"from": ".wanderu.com", "to": ".google.com", "width": 1.0}, {"from": ".eventbrite.com", "to": ".bit.ly", "width": 1.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
