@@ -28,7 +28,7 @@ def process_main(path):
     places = {}
     conn = sqlite3.connect(path)
     cur = conn.cursor()
-    cur.execute('select id, from_visit, place_id, visit_type from moz_historyvisits order by visit_date desc limit 10000')
+    cur.execute('select id, from_visit, place_id, visit_type from moz_historyvisits order by visit_date desc limit 1000')
     row = cur.fetchall()
 
     for r in row:
